@@ -25,7 +25,7 @@ class ProductController extends CRUDController
                 'price' => ['required', 'numeric'],
                 'stock' => ['required', 'numeric'],
                 'reorder_level' => ['required', 'numeric'],
-                'photo' => ['required', 'image', 'dimensions:min_width=1000,min_height=1000'],
+                'photo' => ['required', 'image', 'dimensions:max_width=4000,max_height=4000'],
             ],
             'update' => [
                 'product_category_id' => ['required', Rule::exists($category->getTable(), 'id')],
@@ -35,7 +35,7 @@ class ProductController extends CRUDController
                 'description' => ['required'],
                 'price' => ['required', 'numeric'],
                 'reorder_level' => ['required', 'numeric'],
-                'photo' => ['sometimes', 'image', 'dimensions:min_width=1000,min_height=1000'],
+                'photo' => ['sometimes', 'image', 'dimensions:max_width=4000,max_height=4000'],
             ],
         ];
     }
