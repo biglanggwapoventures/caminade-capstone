@@ -26,6 +26,10 @@ class Product extends Model
         'price' => 'float',
     ];
 
+    protected $appends = [
+        'photo_src',
+    ];
+
     public function supplier()
     {
         return $this->belongsTo(Supplier::class, 'supplier_id');
@@ -39,5 +43,10 @@ class Product extends Model
     public function scopeFieldsForMasterList($query)
     {
         return $query;
+    }
+
+    public function getPhotoSrcAttribute()
+    {
+        return asset("storage/{$this->photo_path}");
     }
 }

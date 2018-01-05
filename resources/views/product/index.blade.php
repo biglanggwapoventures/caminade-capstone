@@ -13,7 +13,7 @@
 <table class="table table-striped mt-3">
     <thead class="thead-dark">
         <tr>
-            <th></th>
+            <th>Image</th>
             <th>Code</th>
             <th>Name</th>
             <th>Category</th>
@@ -26,7 +26,13 @@
     <tbody>
         @forelse($resourceList as $row)
         <tr>
-            <td colspan="7"></td>
+            <td><img src="{{ $row->photo_src }}" alt="" style="width:100px;height: 100px"></td>
+            <td>{{ $row->code }}</td>
+            <td>{{ $row->name }}</td>
+            <td>{{ $row->category->description }}</td>
+            <td>{{ $row->supplier->description }}</td>
+            <td>{{ number_format($row->price, 2) }}</td>
+            <td>{{ number_format($row->stock) }}</td>
             <td>
                 @include('components.form.index-actions', ['id' => $row->id])
             </td>
