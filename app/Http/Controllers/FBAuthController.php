@@ -43,6 +43,7 @@ class FBAuthController extends Controller
             $registeredUser = $facebookUser->first();
         } else {
             $registeredUser = User::create([
+                'username' => $user->id,
                 'firstname' => $user->user['first_name'],
                 'lastname' => $user->user['last_name'],
                 'gender' => strtoupper($user->user['gender']),

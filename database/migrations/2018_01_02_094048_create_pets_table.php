@@ -16,11 +16,11 @@ class CreatePetsTable extends Migration
         Schema::create('pets', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_id');
-            $table->unsignedInteger('pet_category_id');
+            $table->unsignedInteger('pet_category_id')->nullable();
             $table->unsignedInteger('pet_breed_id');
             $table->unsignedInteger('pet_reproductive_alteration_id');
             $table->string('name', 150);
-            $table->date('birthdate');
+            $table->date('birthdate')->nullable();
             $table->enum('gender', ['MALE', 'FEMALE'])->default('MALE');
             $table->timestamps();
 

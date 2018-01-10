@@ -42,7 +42,7 @@ class Product extends Model
 
     public function scopeFieldsForMasterList($query)
     {
-        return $query;
+        return $query->with(['supplier', 'category']);
     }
 
     public function getPhotoSrcAttribute()

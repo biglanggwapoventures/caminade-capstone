@@ -66,7 +66,7 @@ class CRUDController extends Controller
 
     public function __construct()
     {
-        $this->viewBaseDir = $this->getBaseDir();
+        $this->viewBaseDir = is_null($this->viewBaseDir) ? $this->getBaseDir() : $this->viewBaseDir;
     }
 
     /**
@@ -304,9 +304,9 @@ class CRUDController extends Controller
         return !is_null($this->relatedModel) && isset($this->validatedInput['child']);
     }
 
-    private function isHasManyRelation()
+    private function isHasManyRelation($key = 'child')
     {
-        return count($this->validatedInput['child']) !== count($this->validatedInput['child'], COUNT_RECURSIVE);
+        return count($this->validatedInput[$key]) !== count($this->validatedInput[$key], COUNT_RECURSIVE);
     }
 
     /**
@@ -314,14 +314,16 @@ class CRUDController extends Controller
      *
      * @param  Model $model The parent model
      */
-    private function createRelations($model)
+    protected function createRelations($model, $key = 'child', $relationModelName = null)
     {
-        $child = $this->validatedInput['child'];
+        $relation = $relationModelName ?? $this->relatedModel;
 
-        if ($this->isHasManyRelation()) {
-            $model->{$this->relatedModel}()->createMany($child);
+        $child = $this->validatedInput[$key];
+
+        if ($this->isHasManyRelation($key)) {
+            $model->{$relation}()->createMany($child);
         } else {
-            $model->{$this->relatedModel}()->create($child);
+            $model->{$relation}()->create($child);
         }
     }
 
@@ -332,12 +334,14 @@ class CRUDController extends Controller
         $model->save();
     }
 
-    private function updateParentRelations($model)
+    protected function updateParentRelations($model, $key = 'child', $relationModelName = null)
     {
-        $child = $this->validatedInput['child'];
+        $relationName = $relationModelName ?? $this->relatedModel;
 
-        if (!$this->isHasManyRelation()) {
-            $relation = $model->{$this->relatedModel}();
+        $child = $this->validatedInput[$key];
+
+        if (!$this->isHasManyRelation($key)) {
+            $relation = $model->{$relationName}();
             $relation->fill($child);
             $relation->save();
             return true;
@@ -354,7 +358,7 @@ class CRUDController extends Controller
             }
         }
 
-        $children = $model->{$this->relatedModel};
+        $children = $model->{$relationName};
 
         $children->each(function ($item) use ($updated) {
             if (in_array($item->id, array_keys($updated))) {
@@ -366,7 +370,7 @@ class CRUDController extends Controller
         });
 
         if (!empty($new)) {
-            $model->{$this->relatedModel}()->createMany($new);
+            $model->{$relationName}()->createMany($new);
         }
 
     }

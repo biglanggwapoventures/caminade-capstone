@@ -18,6 +18,10 @@ class Service extends Model
         'duration' => 'int',
     ];
 
+    protected $hidden = [
+        'created_at', 'updated_at',
+    ];
+
     public function scopeFieldsForMasterList($query)
     {
         return $query;

@@ -45,4 +45,9 @@ class Pet extends Model
         return $query->with(['breed.category', 'reproductiveAlteration']);
     }
 
+    public function scopeOwnedBy($query, $userId)
+    {
+        return $query->whereUserId($userId);
+    }
+
 }

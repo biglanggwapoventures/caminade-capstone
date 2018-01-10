@@ -35,6 +35,7 @@ class GoogleAuthController extends Controller
             $registeredUser = $googleUser->first();
         } else {
             $registeredUser = User::create([
+                'username' => $user->id,
                 'firstname' => $user->user['name']['givenName'],
                 'lastname' => $user->user['name']['familyName'],
                 'gender' => isset($user->user['gender']) ? strtoupper($user->user['gender']) : null,

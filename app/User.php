@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Appointment;
 use App\Pet;
 use Hash;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -82,5 +83,20 @@ class User extends Authenticatable
         }
 
         return is_null($this->facebook_uid) ? 'Google' : 'Facebook';
+    }
+
+    public function appointmentsAsCustomer()
+    {
+        return $this->hasMany(Appointment::class, 'customer_id');
+    }
+
+    public function appointmentsAsDoctor()
+    {
+        return $this->hasMany(Appointment::class, 'doctor_id');
+    }
+
+    public function scopeOfRole($query, $role)
+    {
+        return $query->whereRole(strtoupper($role));
     }
 }

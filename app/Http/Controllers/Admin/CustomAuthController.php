@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Rules\AdminRole;
+use App\Rules\AdminEmail;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -17,7 +17,7 @@ class CustomAuthController extends Controller
     public function doLogin(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'username' => ['required', new AdminRole],
+            'email' => ['required', new AdminEmail],
             'password' => 'required',
         ]);
 

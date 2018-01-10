@@ -53,9 +53,11 @@ class UserController extends CRUDController
             ];
         }
 
-        if (Auth::check() && Auth::user()->is('admin')) {
-            $rules['role'] = ['required', Rule::in(['DOCTOR', 'CUSTOMER', 'STAFF'])];
-        }
+        $rules['role'] = ['required', Rule::in(['DOCTOR', 'CUSTOMER', 'STAFF'])];
+
+        // if (Auth::check() && Auth::user()->is('admin')) {
+        //     $rules['role'] = ['required', Rule::in(['DOCTOR', 'CUSTOMER', 'STAFF'])];
+        // }
 
         return $rules;
     }

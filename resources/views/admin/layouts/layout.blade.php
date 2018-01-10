@@ -14,14 +14,7 @@
         @stack('modals')
         <script type="text/javascript" src="{{ asset('js/jquery.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('js/bootstrap.min.js') }}"></script>
-        <script type="text/javascript">
-            jQuery(document).ready(function($) {
-                $('body').on('click', '.trash-row', function () {
-                    if(!confirm('Are you sure you want to delete this entry? This action cannot be undone!')) return;
-                    $(this).closest('form').submit();
-                });
-            });
-        </script>
+        <script type="text/javascript" src="{{ asset('js/main.js') }}"></script>
         @stack('scripts')
     </body>
 </html>
