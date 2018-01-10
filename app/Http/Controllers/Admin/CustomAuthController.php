@@ -13,6 +13,9 @@ class CustomAuthController extends Controller
 
     public function showLoginPage()
     {
+        if (Auth::check() && Auth::user()->is('admin')) {
+            return redirect(route('admin.user.index'));
+        }
         return view('admin.login');
     }
 
