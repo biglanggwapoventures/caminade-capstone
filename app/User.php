@@ -73,7 +73,7 @@ class User extends Authenticatable
 
     public function is($role)
     {
-        return $this->role === strtoupper($role);
+        return $this->role == strtoupper($role);
     }
 
     public function getRegistrationMethodAttribute()

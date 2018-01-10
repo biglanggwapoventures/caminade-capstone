@@ -35,6 +35,7 @@ class UserController extends CRUDController
             'contact_number' => ['required'],
             'address' => ['sometimes'],
             'gender' => ['required', Rule::in(['MALE', 'FEMALE'])],
+            'role' => ['sometimes', Rule::in(['DOCTOR', 'CUSTOMER', 'STAFF', 'ADMIN'])],
         ];
 
         if ($method === 'store') {
@@ -51,12 +52,6 @@ class UserController extends CRUDController
                 'password' => 'present|nullable|min:6',
                 'password_confirmation' => 'present|nullable|same:password',
             ];
-        }
-
-        // $rules['role'] = ['required', Rule::in(['DOCTOR', 'CUSTOMER', 'STAFF'])];
-
-        if (Auth::check() && Auth::user()->is('admin')) {
-            $rules['role'] = ['required', Rule::in(['DOCTOR', 'CUSTOMER', 'STAFF'])];
         }
 
         return $rules;
