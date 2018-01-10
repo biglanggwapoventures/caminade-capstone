@@ -7,23 +7,23 @@
     @include('blocks.home-header')
     <div class="row mt-3">
         <div class="col-3">
-            <a class="btn btn-sm btn-success btn-block" href="{{ route('user.appointment.create') }}"><i class="fas fa-plus"></i> New appointment</a>
+            <a class="btn  btn-success btn-block" href="{{ route('user.appointment.create') }}"><i class="fas fa-plus"></i> New appointment</a>
         </div>
         <div class="col">
             <h4 class="mb-3">Appointments</h4>
-            <table class="table table-sm">
+            <table class="table ">
                 <thead>
                     <tr>
-                        <th>Date and time</th>
-                        <th>Pet(s) and Service(s)</th>
-                        <th>Total Payable</th>
-                        <th>Status</th>
+                        <th class="bg-secondary text-white">Date and time</th>
+                        <th class="bg-secondary text-white">Pet(s) and Service(s)</th>
+                        <th class="bg-secondary text-white">Total Payable</th>
+                        <th class="bg-secondary text-white">Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($resourceList As $row)
                         <tr>
-                            <td>{{ date_create($row->appointment_date)->format('F d,Y') }} @ {{ date_create_immutable_from_format('H:i:s', $row->appointment_time)->format('h:i A') }}</td>
+                            <td>{{ date_create($row->appointment_date)->format('F d, Y') }} @ {{ date_create_immutable_from_format('H:i:s', $row->appointment_time)->format('h:i A') }}</td>
                             <td>
                                 <ul class="list-unstyled pl-0">
                                     @foreach($row->line AS $line)
@@ -31,7 +31,7 @@
                                     @endforeach
                                 </ul>
                             </td>
-                            <td>{{ number_format($row->line->sum('service.price'), 2) }} php</td>
+                            <td>{{ number_format($row->getTotalAmount(), 2) }} php</td>
                             <td>{{ $row->appointment_status }}</td>
                         </tr>
                     @empty

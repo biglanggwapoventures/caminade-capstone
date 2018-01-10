@@ -13,6 +13,7 @@ class Appointment extends Model
         'customer_id',
         'doctor_id',
         'remarks',
+        'findings',
         'appointment_date',
         'appointment_time',
         'appointment_status',
@@ -26,7 +27,9 @@ class Appointment extends Model
 
     public function doctor()
     {
-        return $this->belongsTo(User::class, 'doctor_id');
+        return $this->belongsTo(User::class, 'doctor_id')->withDefault(function ($doctor) {
+            $doctor->firstname = 'N/A';
+        });
     }
 
     public function line()
@@ -47,6 +50,7 @@ class Appointment extends Model
                     return $line->with(['pet', 'service']);
                 },
                 'customer',
+                'doctor',
             ]);
     }
 
@@ -56,4 +60,10 @@ class Appointment extends Model
             return $used->quantity * $used->product->price;
         });
     }
+
+    public function is($status)
+    {
+        return strtoupper($status) === $this->appointment_status;
+    }
+
 }

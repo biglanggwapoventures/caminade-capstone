@@ -31,17 +31,17 @@
                         {!! Form::bsPassword('password', 'Desired Password') !!}
                     </div>
                     <div class="col">
-                        {!! Form::bsText('password_confirmation', 'Password, Again') !!}
+                        {!! Form::bsPassword('password_confirmation', 'Password, Again') !!}
                     </div>
                 </div>
-                {!! Form::bsSelect('role', 'Role', ['' => '', 'DOCTOR' => 'Doctor', 'STAFF' => 'Staff', 'CUSTOMER' => 'Customer']) !!}
+                {!! Form::bsSelect('role', 'Role', ['' => '', 'DOCTOR' => 'Doctor', 'STAFF' => 'Staff', 'CUSTOMER' => 'Customer'], null, ['class' => 'custom-select w-100']) !!}
             </div>
             <div class="col-4">
                 {!! Form::bsText('firstname', 'First Name') !!}
                 {!! Form::bsText('lastname', 'Last Name') !!}
                 <div class="row">
                     <div class="col-4">
-                        {!! Form::bsSelect('gender', 'Gender', ['' => '', 'MALE' => 'MALE', 'FEMALE' => 'FEMALE']) !!}
+                        {!! Form::bsSelect('gender', 'Gender', ['' => '', 'MALE' => 'MALE', 'FEMALE' => 'FEMALE'], null, ['class' => 'custom-select w-100']) !!}
                     </div>
                     <div class="col">
                         {!! Form::bsText('contact_number', 'Contact Number') !!}

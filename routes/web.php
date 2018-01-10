@@ -5,7 +5,7 @@ Route::post('/', 'CustomAuthController@doLogin')->name('do.login');
 
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'as' => 'admin.'], function () {
     Route::get('/', 'CustomAuthController@showLoginPage')->name('show.login');
-    // Route::post('/', 'CustomAuthController@doLogin')->name('do.login');
+    Route::post('/', 'CustomAuthController@doLogin')->name('do.login');
 
     Route::resource('pet-category', 'PetCategoryController');
     Route::resource('pet-breed', 'PetBreedController');

@@ -99,4 +99,12 @@ class User extends Authenticatable
     {
         return $query->whereRole(strtoupper($role));
     }
+    public static function customerList()
+    {
+        return self::ofRole('customer')
+            ->get()
+            ->mapWithKeys(function ($item) {
+                return [$item->id => "{$item->fullname} [{$item->username}]"];
+            });
+    }
 }

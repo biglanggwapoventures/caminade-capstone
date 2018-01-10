@@ -28,9 +28,9 @@
 <div class="row">
     <div class="col-12">
         @if(is_null($resourceData->id))
-        {!! Form::open(['url' => MyHelper::resource('store'), 'method' => 'POST', 'class' => 'ajax']) !!}
+        {!! Form::open(['url' => MyHelper::resource('store'), 'method' => 'POST', 'class' => 'ajax','data-next-url' => MyHelper::resource('index')]) !!}
         @else
-        {!! Form::model($resourceData, ['url' => MyHelper::resource('update', ['id' => $resourceData->id]), 'method' => 'PATCH', 'class' => 'ajax']) !!}
+        {!! Form::model($resourceData, ['url' => MyHelper::resource('update', ['id' => $resourceData->id]), 'method' => 'PATCH', 'class' => 'ajax', 'data-next-url' => MyHelper::resource('index')]) !!}
         @endif
 
             <div class="row">
@@ -80,7 +80,9 @@
                                     {!! Form::bsSelect("child[{$loop->index}][pet_id]", null, $customerPets, $row->pet_id, ['class' => 'pets custom-select  w-100', 'data-name' => 'child[idx][pet_id]']) !!}
                                     {!! Form::hidden("child[{$loop->index}][id]", $row->id) !!}
                                 </td>
-                                <td>{!! Form::bsSelect("child[{$loop->index}][service_id]", null, $serviceList,  $row->service_id, ['class' => 'custom-select w-100 service', 'data-name' => 'child[idx][service_id]']) !!}</td>
+                                <td>
+                                    {!! Form::bsSelect("child[{$loop->index}][service_id]", null, $serviceList,  $row->service_id, ['class' => 'custom-select w-100 service', 'data-name' => 'child[idx][service_id]']) !!}
+                                </td>
                                 <td class="service-duration clear"></td>
                                 <td class="service-price clear"></td>
                                 <td><button class="btn btn-danger remove-line" type="button"><i class="fas fa-times"></i></button></td>
@@ -144,10 +146,18 @@
             </table>
             </div>
             <h4 class="mt-5">Post Appointment Findings</h4>
-            {!! Form::bsTextarea('findings', '', null, ['rows' => 4]) !!}
+            {!! Form::bsTextarea('parent[findings]', null, $resourceData->findings, ['rows' => 4]) !!}
+            <hr>
+            <div class="row">
+                <div class="col-4">
+                    {!! Form::bsSelect('parent[appointment_status]', 'Set appointment status', ['PENDING' => 'Pending', 'APPROVED' => 'Approved', 'DENIED' => 'Rejected'],$resourceData->appointment_status,['class' => 'custom-select w-100']) !!}
+                </div>
+                <div class="col">
+                    {!! Form::bsText('parent[status_remarks]', 'Status Remarks', $resourceData->status_remarks) !!}
+                </div>
+            </div>
             <hr>
             <button type="submit" class="btn btn-success">Save</button>
-
         {!! Form::close() !!}
     </div>
 </div>

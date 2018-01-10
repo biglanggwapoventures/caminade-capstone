@@ -5,7 +5,7 @@ namespace App\Rules;
 use App\User;
 use Illuminate\Contracts\Validation\Rule;
 
-class AdminEmail implements Rule
+class AdminRole implements Rule
 {
     /**
      * Create a new rule instance.
@@ -26,8 +26,8 @@ class AdminEmail implements Rule
      */
     public function passes($attribute, $value)
     {
-        return User::whereRole('ADMIN')
-            ->whereEmail($value)
+        return User::ofRole('admin')
+            ->whereUsername($value)
             ->exists();
     }
 

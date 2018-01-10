@@ -53,21 +53,23 @@
         </div>
         @else
         <div class="col-3">
-            <button class="btn btn-success btn-sm btn-block mb-2" data-toggle="modal" data-target="#new-pet"><i class="fas fa-plus"></i> Register new pet</button>
+            <button class="btn btn-success btn-block mb-2" data-toggle="modal" data-target="#new-pet"><i class="fas fa-plus"></i> Register new pet</button>
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title mb-0">My Pets</h5>
                     <p class="card-text mt-0">{{ $resourceList->count() }} pet(s) in total</p>
                 </div>
-                <div class="list-group list-group-flush">
+                <div class="list-group list-group-flush ">
                     @foreach($resourceList as $pet)
-                        <a href="#" class="list-group-item list-group-item-action">{{ "{$loop->iteration}. {$pet->name}" }}</a>
+                        <a href="{{ route('user.pet.index', ['id' => $pet->id]) }}" class="list-group-item list-group-item-action {{ request()->id == $pet->id ? 'active' : '' }}">{{ "{$loop->iteration}. {$pet->name}" }}</a>
                     @endforeach
                 </div>
             </div>
         </div>
         <div class="col">
+            @if(request()->id)
             <h4 class="mb-3">Pet Information Sheet</h4>
+            @php $pet = $resourceList->firstWhere('id', request()->id) @endphp
             <nav>
                 <div class="nav nav-tabs" id="nav-tab" role="tablist">
                     <a class="nav-item nav-link active" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="true">Profile</a>
@@ -75,6 +77,7 @@
                     <a class="nav-item nav-link" id="nav-logs-tab" data-toggle="tab" href="#nav-logs" role="tab" aria-controls="nav-logs" aria-selected="false">Logs</a>
                 </div>
             </nav>
+            {!! Form::model($pet, ['url' => route('user.pet.update', ['id' => $pet->id]), 'method' => 'PATCH', 'class' => 'ajax']) !!}
             <div class="tab-content mt-4" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
                     <div class="row">
@@ -102,9 +105,15 @@
 
                     </div>
                 </div>
-                <div class="tab-pane fade" id="nav-appointment-history" role="tabpanel" aria-labelledby="nav-appointment-history-tab">history</div>
+                <div class="tab-pane fade" id="nav-appointment-history" role="tabpanel" aria-labelledby="nav-appointment-history-tab">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> Only approved appointments are listed here.
+                    </div>
+                </div>
                 <div class="tab-pane fade" id="nav-logs" role="tabpanel" aria-labelledby="nav-logs-tab">logs</div>
             </div>
+            {!! Form::close() !!}
+            @endif
         </div>
         @endif
 

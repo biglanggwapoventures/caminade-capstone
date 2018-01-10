@@ -16,6 +16,13 @@ use Illuminate\Validation\Rule;
 
 class AppointmentController extends CRUDController
 {
+    protected $filterFields = [
+        'from' => ['appointment_date', '>='],
+        'to' => ['appointment_date', '<='],
+        'customer_id' => ['customer_id', '='],
+        'status' => ['appointment_status', '='],
+    ];
+
     public function __construct(
         Appointment $model,
         Pet $pet,
@@ -35,7 +42,9 @@ class AppointmentController extends CRUDController
                 'parent.customer_id' => ['required', new CustomerRole],
                 'parent.doctor_id' => ['nullable', 'present', new DoctorRole],
                 'parent.remarks' => 'present',
-                // 'parent.appointment_status' => ['required', Rule::in(['PENDING', 'APPROVED', 'DENIED', 'CANCELLED'])],
+                'parent.findings' => 'present',
+                'parent.appointment_status' => ['required', Rule::in(['PENDING', 'APPROVED', 'DENIED'])],
+                'parent.status_remarks' => ['present'],
                 'child.*.pet_id' => ['required', Rule::exists($pet->getTable(), $pet->getKeyName())],
                 'child.*.service_id' => ['required', Rule::exists($service->getTable(), $service->getKeyName())],
                 'products.*.product_id' => ['nullable', 'required_with:products.*.quantity', Rule::exists($product->getTable(), $pet->getKeyName())],
@@ -47,7 +56,9 @@ class AppointmentController extends CRUDController
                 'parent.customer_id' => ['required', new CustomerRole],
                 'parent.doctor_id' => ['nullable', 'present', new DoctorRole],
                 'parent.remarks' => 'present',
-                // 'parent.appointment_status' => ['required', Rule::in(['PENDING', 'APPROVED', 'DENIED', 'CANCELLED'])],
+                'parent.findings' => 'present',
+                'parent.appointment_status' => ['required', Rule::in(['PENDING', 'APPROVED', 'DENIED'])],
+                'parent.status_remarks' => ['present'],
                 'child.*.id' => ['sometimes', Rule::exists($line->getTable())],
                 'child.*.pet_id' => ['required', Rule::exists($pet->getTable(), $pet->getKeyName())],
                 'child.*.service_id' => ['required', Rule::exists($service->getTable(), $service->getKeyName())],
@@ -58,17 +69,23 @@ class AppointmentController extends CRUDController
         ];
     }
 
+    public function beforeIndex($query)
+    {
+        collect($this->filterFields)->each(function ($value, $key) use ($query) {
+            if ($filter = request()->{$key}) {
+                list($column, $operand) = $value;
+                $query->where($column, $operand, $filter);
+            }
+        });
+        $this->viewData['customerList'] = User::customerList()->prepend('** ALL CUSTOMER **', '');
+    }
+
     public function beforeCreate()
     {
         $services = Service::select('id', 'name', 'price', 'duration')->orderBy('name')->get();
         $products = Product::select('id', 'name', 'price')->orderBy('name')->get();
 
-        $this->viewData['customerList'] = User::ofRole('customer')
-            ->get()
-            ->mapWithKeys(function ($item) {
-                return [$item->id => "{$item->fullname} [{$item->username}]"];
-            })
-            ->prepend('', '');
+        $this->viewData['customerList'] = User::customerList()->prepend('', '');
 
         $this->viewData['doctorList'] = User::ofRole('DOCTOR')
             ->get()
