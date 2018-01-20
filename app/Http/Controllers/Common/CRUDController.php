@@ -321,7 +321,16 @@ class CRUDController extends Controller
         $child = $this->validatedInput[$key];
 
         if ($this->isHasManyRelation($key)) {
-            $model->{$relation}()->createMany($child);
+            $multipleChild = [];
+            foreach ($child as $row) {
+                if (empty(array_filter(array_values($row)))) {
+                    continue;
+                }
+                $multipleChild[] = $row;
+            }
+            if (!empty($multipleChild)) {
+                $model->{$relation}()->createMany($child);
+            }
         } else {
             $model->{$relation}()->create($child);
         }
