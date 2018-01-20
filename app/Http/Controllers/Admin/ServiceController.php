@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Common\CRUDController;
 use App\Service;
@@ -11,6 +11,7 @@ class ServiceController extends CRUDController
 {
     public function __construct(Service $model, Request $request)
     {
+        $this->middleware('role:admin', ['except' => ['index']]);
         parent::__construct();
         $this->resourceModel = $model;
         $this->validationRules = [
@@ -18,6 +19,7 @@ class ServiceController extends CRUDController
                 'name' => ['required', Rule::unique($model->getTable())],
                 'description' => ['present'],
                 'duration' => ['required', 'integer'],
+                'service_status' => ['required', Rule::in(['active', 'inactive'])],
                 'price' => ['required', 'numeric'],
             ],
             'update' => [
@@ -25,6 +27,7 @@ class ServiceController extends CRUDController
                 'description' => ['present'],
                 'duration' => ['required', 'integer'],
                 'price' => ['required', 'numeric'],
+                'service_status' => ['required', Rule::in(['active', 'inactive'])],
             ],
         ];
     }

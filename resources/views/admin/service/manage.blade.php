@@ -15,27 +15,35 @@
         <hr>
     </div>
 </div>
-<div class="row">
-    <div class="col-4">
         @if(is_null($resourceData->id))
         {!! Form::open(['url' => MyHelper::resource('store'), 'method' => 'POST']) !!}
         @else
         {!! Form::model($resourceData, ['url' => MyHelper::resource('update', ['id' => $resourceData->id]), 'method' => 'PATCH']) !!}
         @endif
 
-            {!! Form::bsText('name', 'Name') !!}
-            {!! Form::bsTextarea('description', 'Description') !!}
             <div class="row">
-                <div class="col">
+                <div class="col-sm-5">
+                    {!! Form::bsText('name', 'Name') !!}
+                </div>
+                <div class="col-sm-2">
                     {!! Form::bsText('duration', 'Duration (in minutes)') !!}
                 </div>
-                <div class="col">
+                <div class="col-sm-2">
                     {!! Form::bsText('price', 'Price') !!}
                 </div>
             </div>
+             {!! Form::bsTextarea('description', 'Description', null, ['rows' =>  3]) !!}
+            <div class="row">
+                <div class="col-3">
+                    <div class="bg-info rounded p-3">
+                        {!! Form::bsSelect('service_status', 'Status', ['' => '', 'active' => 'Active', 'inactive' => 'Inactive']) !!}
+                    </div>
+                </div>
+            </div>
+
+
+            <hr>
             <button type="submit" class="btn btn-success">Save</button>
 
         {!! Form::close() !!}
-    </div>
-</div>
 @endsection

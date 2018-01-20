@@ -3,6 +3,7 @@
 namespace App;
 
 use App\ProductCategory;
+use App\ProductLog;
 use App\Supplier;
 use Illuminate\Database\Eloquent\Model;
 
@@ -17,6 +18,7 @@ class Product extends Model
         'price',
         'stock',
         'reorder_level',
+        'product_status',
         'photo_path',
     ];
 
@@ -42,11 +44,32 @@ class Product extends Model
 
     public function scopeFieldsForMasterList($query)
     {
-        return $query->with(['supplier', 'category']);
+        return $query->with(['supplier', 'category'])->orderBy('product_status')->orderBy('name');
     }
 
     public function getPhotoSrcAttribute()
     {
         return asset("storage/{$this->photo_path}");
+    }
+
+    public function beginningBalanceLog()
+    {
+        return $this->morphOne(ProductLog::class, 'log', 'causer', 'causer_id');
+    }
+
+    public function setBeginningBalance($quantity = null)
+    {
+        $log = $this->beginningBalanceLog()->firstOrNew([
+            'quantity' => $quantity ?: $this->stock,
+            'product_id' => $this->id,
+            'remarks' => 'begnning balance',
+        ]);
+        $log->save();
+        return $log;
+    }
+
+    public function logDecrements()
+    {
+        # code...
     }
 }

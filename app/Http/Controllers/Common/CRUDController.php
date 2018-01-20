@@ -351,6 +351,10 @@ class CRUDController extends Controller
         $updated = [];
 
         foreach ($child as $row) {
+            if (empty(array_filter(array_values($row)))) {
+                continue;
+            }
+
             if (!isset($row['id'])) {
                 $new[] = $row;
             } else {

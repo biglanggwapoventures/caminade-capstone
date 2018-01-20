@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFindingColumnsToAppointmentsTable extends Migration
+class AddCompletedColumnToAppointmentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class CreateFindingColumnsToAppointmentsTable extends Migration
     public function up()
     {
         Schema::table('appointments', function (Blueprint $table) {
-            $table->text('findings')->after('status_remarks')->nullable();
+            $table->timestamp('completed_at')->nullable()->after('status_remarks');
         });
     }
 
@@ -26,7 +26,7 @@ class CreateFindingColumnsToAppointmentsTable extends Migration
     public function down()
     {
         Schema::table('appointments', function (Blueprint $table) {
-            $table->dropColumn('findings');
+            $table->dropColumn('completed_at');
         });
     }
 }

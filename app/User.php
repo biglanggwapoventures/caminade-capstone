@@ -30,12 +30,14 @@ class User extends Authenticatable
         'contact_number',
         'address',
         'role',
+        'role_title',
         'active',
     ];
 
     protected $appends = [
         'fullname',
         'registration_method',
+        'is_blocked',
     ];
 
     /**
@@ -58,7 +60,7 @@ class User extends Authenticatable
 
     public function scopeFieldsForMasterList($query)
     {
-        return $query;
+        return $query->orderBy('firstname');
     }
 
     public function setPasswordAttribute($val)
@@ -73,7 +75,8 @@ class User extends Authenticatable
 
     public function is($role)
     {
-        return $this->role == strtoupper($role);
+        $roles = array_wrap($role);
+        return in_array(strtolower($this->role), array_map('strtolower', $roles));
     }
 
     public function getRegistrationMethodAttribute()
@@ -99,12 +102,42 @@ class User extends Authenticatable
     {
         return $query->whereRole(strtoupper($role));
     }
+
     public static function customerList()
     {
         return self::ofRole('customer')
+            ->orderBy('firstname')
             ->get()
             ->mapWithKeys(function ($item) {
                 return [$item->id => "{$item->fullname} [{$item->username}]"];
             });
+    }
+
+    public function scopeUnblocked($query)
+    {
+        return $query->whereNull('blocked_at')->whereNull('blocked_by');
+    }
+
+    public function scopeLoginStatus($query, $status)
+    {
+        if ($status === 'unblocked') {
+            return $query->whereNull('blocked_at')->whereNull('blocked_by');
+        }
+
+        if ($status === 'blocked') {
+            return $query->whereNotNull('blocked_at')->whereNotNull('blocked_by');
+        }
+
+        return $query;
+    }
+
+    public function getIsBlockedAttribute()
+    {
+        return $this->blocked_by && $this->blocked_at;
+    }
+
+    public function blocked()
+    {
+        return $this->belongsTo(get_class($this), 'blocked_by');
     }
 }

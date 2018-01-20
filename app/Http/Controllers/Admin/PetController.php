@@ -6,6 +6,7 @@ use App\Http\Controllers\Common\CRUDController;
 use App\Pet;
 use App\PetCategory;
 use App\PetReproductiveAlteration;
+use App\User;
 use Illuminate\Validation\Rule;
 
 class PetController extends CRUDController
@@ -17,19 +18,36 @@ class PetController extends CRUDController
         $this->validationRules = [
             'store' => [
                 'name' => ['required', 'max:120'],
-                'birthdate' => ['required', 'date'],
+                'user_id' => [
+                    'required',
+                    Rule::exists('users', 'id')->where(function ($q) {
+                        $q->where('role', 'CUSTOMER');
+                    }),
+                ],
+                'birthdate' => ['nullable', 'date'],
                 'gender' => ['required', 'in:MALE,FEMALE'],
                 'pet_breed_id' => ['required', Rule::exists('pet_breeds', 'id')],
                 'pet_reproductive_alteration_id' => ['required', Rule::exists('pet_reproductive_alterations', 'id')],
             ],
             'update' => [
                 'name' => ['required', 'max:120'],
-                'birthdate' => ['required', 'date'],
+                'user_id' => [
+                    'required',
+                    Rule::exists('users', 'id')->where(function ($q) {
+                        $q->where('role', 'CUSTOMER');
+                    }),
+                ],
+                'birthdate' => ['nullable', 'date'],
                 'gender' => ['required', 'in:MALE,FEMALE'],
                 'pet_breed_id' => ['required', Rule::exists('pet_breeds', 'id')],
                 'pet_reproductive_alteration_id' => ['required', Rule::exists('pet_reproductive_alterations', 'id')],
             ],
         ];
+    }
+
+    public function beforeIndex($query)
+    {
+        $query->with('owner');
     }
 
     public function beforeStore()
@@ -41,6 +59,7 @@ class PetController extends CRUDController
     {
         $this->viewData['reproductiveAlterations'] = PetReproductiveAlteration::dropdownFormat();
         $this->viewData['breeds'] = PetCategory::dropdownFormatWithBreeds();
+        $this->viewData['customers'] = User::customerList();
     }
 
     public function beforeEdit($model)

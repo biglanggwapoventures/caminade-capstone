@@ -15,30 +15,34 @@
     @include('blocks.home-header')
     <div class="row mt-3">
         <div class="col-3">
-            <button class="btn btn-sm btn-success btn-block disabled"><i class="fas fa-plus"></i> New appointment</button>
+            <button class="btn btn-success btn-block disabled"><i class="fas fa-plus"></i> New appointment</button>
         </div>
         <div class="col">
             <h4 class="mb-3">Appointments</h4>
             <div class="card">
-                {!! Form::open(['url' => MyHelper::resource('store'), 'method' => 'post', 'class' => 'ajax']) !!}
+                @if(is_null($resourceData->id))
+                {!! Form::open(['url' => MyHelper::resource('store'), 'method' => 'post', 'class' => 'ajax', 'data-next-url' => MyHelper::resource('index')]) !!}
+                @else
+                {!! Form::open(['url' => MyHelper::resource('update', ['id' => $resourceData->id]), 'method' => 'patch', 'class' => 'ajax', 'data-next-url' => MyHelper::resource('index')]) !!}
+                @endif
                 <div class="card-header">New appointment sheet</div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-3">
-                            {!! Form::bsDate('parent[appointment_date]', 'Date', null, ['class' => 'form-control form-control-sm']) !!}
+                            {!! Form::bsDate('parent[appointment_date]', 'Date', $resourceData->appointment_date, ['class' => 'form-control']) !!}
                         </div>
                         <div class="col-3">
-                            {!! Form::bsTime('parent[appointment_time]', 'Time', null, ['class' => 'form-control form-control-sm']) !!}
+                            {!! Form::bsTime('parent[appointment_time]', 'Time', $resourceData->appointment_time, ['class' => 'form-control']) !!}
                         </div>
                         <div class="col">
-                            {!! Form::bsText('parent[remarks]', 'Remarks', null, ['class' => 'form-control form-control-sm']) !!}
+                            {!! Form::bsText('parent[remarks]', 'Remarks', $resourceData->remarks, ['class' => 'form-control']) !!}
                         </div>
                     </div>
 
                 </div>
                 <table class="table" id="appointment-services" data-service-details="{{ $serviceInfo->toJson() }}">
                         <thead>
-                            <tr class="table-active table-sm">
+                            <tr class="table-active">
                                 <th>Pet</th>
                                 <th>Service</th>
                                 <th>Duration</th>
@@ -47,23 +51,36 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @forelse($resourceData->line AS $line)
                             <tr>
-                                <td>{!! Form::bsSelect('child[0][pet_id]', null, $pets, null, ['class' => 'custom-select custom-select-sm w-100', 'data-name' => 'child[idx][pet_id]']) !!}</td>
-                                <td>{!! Form::bsSelect('child[0][service_id]', null, $serviceList,  null, ['class' => 'custom-select custom-select-sm  w-100 service', 'data-name' => 'child[idx][service_id]']) !!}</td>
+                                <td>
+                                    {!! Form::bsSelect("child[{$loop->index}][pet_id]", null, $pets, $line->pet_id, ['class' => 'custom-select w-100', 'data-name' => 'child[idx][pet_id]']) !!}
+                                    {!! Form::hidden("child[{$loop->index}][id]", $line->id) !!}
+                                </td>
+                                <td>{!! Form::bsSelect("child[{$loop->index}][service_id]", null, $serviceList,  $line->service_id, ['class' => 'custom-select w-100 service', 'data-name' => 'child[idx][service_id]']) !!}</td>
                                 <td class="service-duration clear"></td>
                                 <td class="service-price clear"></td>
                                 <td><button class="btn btn-sm btn-danger remove-line" type="button"><i class="fas fa-times"></i></button></td>
                             </tr>
+                            @empty
+                            <tr>
+                                <td>{!! Form::bsSelect('child[0][pet_id]', null, $pets, null, ['class' => 'custom-select w-100', 'data-name' => 'child[idx][pet_id]']) !!}</td>
+                                <td>{!! Form::bsSelect('child[0][service_id]', null, $serviceList,  null, ['class' => 'custom-select w-100 service', 'data-name' => 'child[idx][service_id]']) !!}</td>
+                                <td class="service-duration clear"></td>
+                                <td class="service-price clear"></td>
+                                <td><button class="btn btn-danger remove-line" type="button"><i class="fas fa-times"></i></button></td>
+                            </tr>
+                            @endforelse
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td class="border-0"><button type="button" class="btn btn-secondary btn-sm add-line"><i class="fas fa-plus"></i> New service</button></td>
+                                <td class="border-0"><button type="button" class="btn btn-secondary add-line"><i class="fas fa-plus"></i> New service</button></td>
                             </tr>
                         </tfoot>
                     </table>
                 <div class="card-footer clearfix">
-                    <a href="{{ route('user.appointment.index') }}" class="btn btn-primary btn-sm">Cancel</a>
-                    <button class="btn btn-success btn-sm float-right">Submit</button>
+                    <a href="{{ route('user.appointment.index') }}" class="btn btn-primary">Cancel</a>
+                    <button class="btn btn-success float-right">Submit</button>
                 </div>
                 {!! Form::close() !!}
             </div>
@@ -89,6 +106,7 @@
             tr.find('.service-duration').text(info['duration']+' minutes');
             tr.find('.service-price').text(info['price']+' php');
         });
+        $('.service').trigger('change');
 
         $('.add-line').click(function() {
             var clone = table.find('tbody tr:first').clone();
@@ -105,8 +123,7 @@
             var tr = table.find('tbody tr');
             if(tr.length === 1){
                 tr.find('select').val('')
-                    .end()
-                    .find('.clear').html('');
+                tr .find('.clear').html('');
                 return;
             }
             $(this).closest('tr').remove();

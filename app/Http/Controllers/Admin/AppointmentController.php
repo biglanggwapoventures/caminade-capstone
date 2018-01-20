@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Appointment;
+use App\AppointmentFinding;
 use App\AppointmentLine;
 use App\AppointmentProduct;
 use App\Http\Controllers\Common\CRUDController;
@@ -30,7 +31,8 @@ class AppointmentController extends CRUDController
         User $customer,
         Product $product,
         AppointmentLine $line,
-        AppointmentProduct $usedProduct
+        AppointmentProduct $usedProduct,
+        AppointmentFinding $finding
     ) {
         parent::__construct();
         $this->resourceModel = $model;
@@ -40,31 +42,37 @@ class AppointmentController extends CRUDController
                 'parent.appointment_date' => 'required|date_format:Y-m-d',
                 'parent.appointment_time' => 'required|date_format:H:i',
                 'parent.customer_id' => ['required', new CustomerRole],
-                'parent.doctor_id' => ['nullable', 'present', new DoctorRole],
+                'parent.doctor_id' => ['nullable', 'required_if:parent.appointment_status,APPROVED', new DoctorRole],
                 'parent.remarks' => 'present',
-                'parent.findings' => 'present',
-                'parent.appointment_status' => ['required', Rule::in(['PENDING', 'APPROVED', 'DENIED'])],
-                'parent.status_remarks' => ['present'],
+                'parent.appointment_status' => ['required', Rule::in(['PENDING', 'APPROVED', 'DENIED', 'COMPLETED'])],
+                'parent.status_remarks' => ['nullable', 'required_if:parent.appointment_status,DENIED'],
+                'parent.is_completed' => ['sometimes', 'boolean'],
                 'child.*.pet_id' => ['required', Rule::exists($pet->getTable(), $pet->getKeyName())],
                 'child.*.service_id' => ['required', Rule::exists($service->getTable(), $service->getKeyName())],
                 'products.*.product_id' => ['nullable', 'required_with:products.*.quantity', Rule::exists($product->getTable(), $pet->getKeyName())],
                 'products.*.quantity' => ['nullable', 'required_with:products.*.product_id', 'numeric'],
+
+                'findings.*.pet_id' => ['nullable', 'distinct', 'required_with:findings.*.findings', Rule::exists($pet->getTable(), $pet->getKeyName())],
+                'findings.*.findings' => ['nullable', 'required_with:products.*.pet_id'],
             ],
             'update' => [
                 'parent.appointment_date' => 'required|date_format:Y-m-d',
-                'parent.appointment_time' => 'required|date_format:H:i:s',
+                'parent.appointment_time' => 'required|date_format:H:i',
                 'parent.customer_id' => ['required', new CustomerRole],
-                'parent.doctor_id' => ['nullable', 'present', new DoctorRole],
+                'parent.doctor_id' => ['nullable', 'required_if:parent.appointment_status,APPROVED', new DoctorRole],
                 'parent.remarks' => 'present',
-                'parent.findings' => 'present',
-                'parent.appointment_status' => ['required', Rule::in(['PENDING', 'APPROVED', 'DENIED'])],
-                'parent.status_remarks' => ['present'],
+                'parent.appointment_status' => ['required', Rule::in(['PENDING', 'APPROVED', 'DENIED', 'COMPLETED'])],
+                'parent.status_remarks' => ['nullable', 'required_if:parent.appointment_status,DENIED'],
+                'parent.is_completed' => ['sometimes', 'boolean'],
                 'child.*.id' => ['sometimes', Rule::exists($line->getTable())],
                 'child.*.pet_id' => ['required', Rule::exists($pet->getTable(), $pet->getKeyName())],
                 'child.*.service_id' => ['required', Rule::exists($service->getTable(), $service->getKeyName())],
                 'products.*.id' => ['sometimes', Rule::exists($usedProduct->getTable())],
                 'products.*.product_id' => ['nullable', 'required_with:products.*.quantity', Rule::exists($product->getTable(), $pet->getKeyName())],
                 'products.*.quantity' => ['nullable', 'required_with:products.*.product_id', 'numeric'],
+                'findings.*.id' => ['sometimes', Rule::exists($finding->getTable())],
+                'findings.*.pet_id' => ['nullable', 'distinct', 'required_with:findings.*.findings', Rule::exists($pet->getTable(), $pet->getKeyName())],
+                'findings.*.findings' => ['nullable', 'required_with:products.*.pet_id'],
             ],
         ];
     }
@@ -78,6 +86,31 @@ class AppointmentController extends CRUDController
             }
         });
         $this->viewData['customerList'] = User::customerList()->prepend('** ALL CUSTOMER **', '');
+    }
+
+    public function beforeStore()
+    {
+        if ($this->validatedInput['parent']['appointment_status'] === 'COMPLETED') {
+            $this->validatedInput['parent']['appointment_status'] = 'APPROVED';
+            $this->validatedInput['parent']['completed_at'] = now()->format('Y-m-d H:i:s');
+        }
+    }
+
+    public function beforeUpdate()
+    {
+        $this->beforeStore();
+    }
+
+    public function afterStore($model)
+    {
+        $this->createRelations($model, 'products', 'usedProducts');
+        $this->createRelations($model, 'findings', 'findings');
+    }
+
+    public function afterUpdate($model)
+    {
+        $this->updateParentRelations($model, 'products', 'usedProducts');
+        $this->updateParentRelations($model, 'findings', 'findings');
     }
 
     public function beforeCreate()
@@ -99,35 +132,11 @@ class AppointmentController extends CRUDController
         $this->viewData['productInfo'] = $products->keyBy('id');
     }
 
-    public function beforeStore()
-    {
-        $this->validatedInput['appointment_status'] = 'APPROVED';
-    }
-
-    public function beforeUpdate()
-    {
-        $this->validatedInput['appointment_status'] = 'APPROVED';
-    }
-
-    public function afterStore($model)
-    {
-        if (!empty(array_filter(array_column(request()->products, 'product_id')))) {
-            $this->createRelations($model, 'products', 'usedProducts');
-        }
-    }
-
-    public function afterUpdate($model)
-    {
-        if (!empty(array_filter(array_column(request()->products, 'product_id')))) {
-            $this->updateParentRelations($model, 'products', 'usedProducts');
-        }
-    }
-
     public function beforeEdit($model)
     {
         $this->beforeCreate();
 
-        $model->load(['line.service', 'usedProducts.product']);
+        $model->load(['line.service', 'usedProducts.product', 'findings']);
         $this->viewData['customerPets'] = Pet::with('breed')->ownedBy($model->customer_id)->get()
             ->mapWithKeys(function ($item) {
                 return [$item->id => "{$item->name} ({$item->breed->description})"];

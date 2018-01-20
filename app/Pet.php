@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\AppointmentFinding;
 use App\PetBreed;
 use App\PetCategory;
 use App\PetReproductiveAlteration;
@@ -22,7 +23,7 @@ class Pet extends Model
 
     public function owner()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function breed()
@@ -48,6 +49,36 @@ class Pet extends Model
     public function scopeOwnedBy($query, $userId)
     {
         return $query->whereUserId($userId);
+    }
+
+    public function scopeOfCustomer($query, $customerId)
+    {
+        return $query->with('breed')->ownedBy($customerId);
+    }
+
+    public function scopeToDropdownFormat()
+    {
+        return $this->get()
+            ->mapWithKeys(function ($item) {
+                return [$item->id => "{$item->name} ({$item->breed->description})"];
+            })
+            ->prepend('', '');
+    }
+
+    public function findings()
+    {
+        return $this->hasMany(AppointmentFinding::class);
+    }
+
+    public function medicalHistory()
+    {
+        return $this->findings()
+            ->whereHas('appointment', function ($q) {
+                $q->whereNotNull('completed_at');
+            })
+            ->orderBy('created_at')
+            ->with('appointment.doctor')
+            ->get();
     }
 
 }

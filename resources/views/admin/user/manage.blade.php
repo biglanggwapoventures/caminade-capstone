@@ -23,35 +23,48 @@
         @endif
 
         <div class="row">
-            <div class="col-4">
+            <div class="col-sm-3">
                 {!! Form::bsText('username', 'Desired Username') !!}
+            </div>
+            <div class="col-sm-3">
                 {!! Form::bsText('email', 'Email Address') !!}
-                <div class="row">
-                    <div class="col">
-                        {!! Form::bsPassword('password', 'Desired Password') !!}
-                    </div>
-                    <div class="col">
-                        {!! Form::bsPassword('password_confirmation', 'Password, Again') !!}
-                    </div>
-                </div>
+            </div>
+            <div class="col-sm-2">
                 {!! Form::bsSelect('role', 'Role', ['' => '', 'DOCTOR' => 'Doctor', 'STAFF' => 'Staff', 'CUSTOMER' => 'Customer'], null, ['class' => 'custom-select w-100']) !!}
             </div>
-            <div class="col-4">
-                {!! Form::bsText('firstname', 'First Name') !!}
-                {!! Form::bsText('lastname', 'Last Name') !!}
-                <div class="row">
-                    <div class="col-4">
-                        {!! Form::bsSelect('gender', 'Gender', ['' => '', 'MALE' => 'MALE', 'FEMALE' => 'FEMALE'], null, ['class' => 'custom-select w-100']) !!}
-                    </div>
-                    <div class="col">
-                        {!! Form::bsText('contact_number', 'Contact Number') !!}
-                    </div>
-                </div>
-            </div>
-            <div class="col-4">
-                {!! Form::bsTextarea('address', 'Address') !!}
+            <div class="col">
+                {!! Form::bsText('role_title', 'Position / Title', null, ['placeholder' => 'e.g "Receptionist", "Certified Veterinarian"']) !!}
             </div>
         </div>
+
+        <hr>
+
+        <div class="row">
+            <div class="col-sm-3">
+                {!! Form::bsText('firstname', 'First Name') !!}
+            </div>
+            <div class="col-sm-3">
+                {!! Form::bsText('lastname', 'Last Name') !!}
+            </div>
+            <div class="col-sm-2">
+                {!! Form::bsSelect('gender', 'Gender', ['' => '', 'MALE' => 'MALE', 'FEMALE' => 'FEMALE'], null, ['class' => 'custom-select w-100']) !!}
+            </div>
+            <div class="col">
+                {!! Form::bsText('contact_number', 'Contact Number') !!}
+            </div>
+        </div>
+        {!! Form::bsText('address', 'Address') !!}
+        <hr>
+
+        <div class="row">
+            <div class="col-sm-4">
+                {!! Form::bsPassword('password', 'Desired Password') !!}
+            </div>
+            <div class="col-sm-4">
+                {!! Form::bsPassword('password_confirmation', 'Password, Again') !!}
+            </div>
+        </div>
+        <hr>
         <button type="submit" class="btn btn-success">Save</button>
 
         {!! Form::close() !!}

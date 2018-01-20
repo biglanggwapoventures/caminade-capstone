@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Common\CRUDController;
 use App\Product;
@@ -13,6 +13,7 @@ class ProductController extends CRUDController
 {
     public function __construct(Product $model, Request $request, ProductCategory $category, Supplier $supplier)
     {
+        $this->middleware('role:admin', ['except' => ['index']]);
         parent::__construct();
         $this->resourceModel = $model;
         $this->validationRules = [
@@ -25,6 +26,7 @@ class ProductController extends CRUDController
                 'price' => ['required', 'numeric'],
                 'stock' => ['required', 'numeric'],
                 'reorder_level' => ['required', 'numeric'],
+                'product_status' => ['required', Rule::in(['active', 'inactive'])],
                 'photo' => ['required', 'image', 'dimensions:max_width=4000,max_height=4000'],
             ],
             'update' => [
@@ -35,6 +37,7 @@ class ProductController extends CRUDController
                 'description' => ['required'],
                 'price' => ['required', 'numeric'],
                 'reorder_level' => ['required', 'numeric'],
+                'product_status' => ['required', Rule::in(['active', 'inactive'])],
                 'photo' => ['sometimes', 'image', 'dimensions:max_width=4000,max_height=4000'],
             ],
         ];
@@ -66,6 +69,15 @@ class ProductController extends CRUDController
             // Storage::disk('public')->delete('folder_path/file_name.jpg');
             $this->beforeStore();
         }
+    }
 
+    public function afteStore($product)
+    {
+        $product->setBeginningBalance();
+    }
+
+    public function afterUpdate($product)
+    {
+        $product->setBeginningBalance();
     }
 }

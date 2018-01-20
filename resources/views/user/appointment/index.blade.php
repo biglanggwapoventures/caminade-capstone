@@ -14,25 +14,39 @@
             <table class="table ">
                 <thead>
                     <tr>
-                        <th class="bg-secondary text-white">Date and time</th>
-                        <th class="bg-secondary text-white">Pet(s) and Service(s)</th>
+                        <th class="bg-secondary text-white">Ref #</th>
+                        <th class="bg-secondary text-white">Date</th>
+                        <th class="bg-secondary text-white">Doctor</th>
                         <th class="bg-secondary text-white">Total Payable</th>
                         <th class="bg-secondary text-white">Status</th>
+                        <th class="bg-secondary text-white"></th>
+                        <th class="bg-secondary text-white"></th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($resourceList As $row)
                         <tr>
-                            <td>{{ date_create($row->appointment_date)->format('F d, Y') }} @ {{ date_create_immutable_from_format('H:i:s', $row->appointment_time)->format('h:i A') }}</td>
-                            <td>
-                                <ul class="list-unstyled pl-0">
-                                    @foreach($row->line AS $line)
-                                        <li > {{ $line->pet->name }} &middot; {{ $line->service->name }}</li>
-                                    @endforeach
-                                </ul>
-                            </td>
+                            <td>#{{ $row->id }}</td>
+                            <td>{{ date_create($row->appointment_date)->format('m/d/Y') }} @ {{ date_create_immutable_from_format('H:i', $row->appointment_time)->format('h:i A') }}</td>
+                            <td>{{ $row->doctor->fullname }}</td>
                             <td>{{ number_format($row->getTotalAmount(), 2) }} php</td>
-                            <td>{{ $row->appointment_status }}</td>
+                            <td>
+                                {{ $row->appointment_status }}
+                            </td>
+                            <td>
+                                @if($row->is('pending'))
+                                    @include('components.form.index-actions', ['id' => $row->id, 'hideRemove' => true])
+                                @endif
+                            </td>
+                            <td>
+                                @if($row->is('pending'))
+                                    {!! Form::open(['url' => route('user.appointment.cancel', ['appointmentId' => $row->id])]) !!}
+                                        <button type="submit" class="btn btn-warning" onclick="javascript:return confirm('Are you sure? This cannot be undone!')">Cancel</button>
+                                    {!! Form::close() !!}
+                                @else
+                                    <a href="{{ MyHelper::resource('show', ['id' => $row->id]) }}" class="btn btn-info">View</a>
+                                @endif
+                            </td>
                         </tr>
                     @empty
                         <tr>
@@ -45,7 +59,3 @@
     </div>
 </div>
 @endsection
-
-@push('modals')
-
-@endpush

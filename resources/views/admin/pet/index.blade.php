@@ -14,6 +14,7 @@
     <thead class="thead-dark">
         <tr>
             <th>Name</th>
+            <th>Owner</th>
             <th>Category</th>
             <th>Breed</th>
             <th>Gender</th>
@@ -26,6 +27,7 @@
         @forelse($resourceList as $row)
         <tr>
             <td>{{ $row->name }}</td>
+            <td>{{ $row->owner->fullname }}</td>
             <td>{{ $row->breed->category->description }}</td>
             <td>{{ $row->breed->description }}</td>
             <td>{{ $row->gender }}</td>

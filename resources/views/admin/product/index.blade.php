@@ -20,6 +20,7 @@
             <th>Supplier</th>
             <th>Price</th>
             <th>Stock on hand</th>
+            <th>Status</th>
             <th></th>
         </tr>
     </thead>
@@ -34,7 +35,14 @@
             <td>{{ number_format($row->price, 2) }}</td>
             <td>{{ number_format($row->stock) }}</td>
             <td>
-                @include('components.form.index-actions', ['id' => $row->id])
+                @if($row->service_status === 'inactive')
+                    <span class="badge badge-warning badge-pill">INACTIVE</span>
+                @else
+                    <span class="badge badge-success badge-pill">ACTIVE</span>
+                @endif
+            </td>
+            <td>
+                @include('components.form.index-actions', ['id' => $row->id, 'hideRemove' => true])
             </td>
         </tr>
         @empty

@@ -106,9 +106,27 @@
                     </div>
                 </div>
                 <div class="tab-pane fade" id="nav-appointment-history" role="tabpanel" aria-labelledby="nav-appointment-history-tab">
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle"></i> Only approved appointments are listed here.
+                    <div class="alert alert-info p-2 mb-2">
+                        <i class="fas fa-info-circle"></i> Only approved and commpleted appointments are listed here.
                     </div>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Findings</th>
+                                <th>Doctor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($pet->medicalHistory() AS $log)
+                                <td>{{ date_create($log->created_at)->format('m/d/Y h:i A') }}</td>
+                                <td>{{ $log->findings }}</td>
+                                <td>{{ $log->appointment->doctor->fullname }}</td>
+                            @empty
+
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
                 <div class="tab-pane fade" id="nav-logs" role="tabpanel" aria-labelledby="nav-logs-tab">logs</div>
             </div>

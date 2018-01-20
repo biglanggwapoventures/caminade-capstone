@@ -32,22 +32,28 @@
             @endguest
             @auth
             <ul class="navbar-nav ml-auto">
+                @if(Auth::user()->is('customer'))
                 <li class="navbar-item">
                     <a href="{{ route('user.pet.index') }}" class="nav-link"><i class="fas fa-paw"></i> My Pets</a>
                 </li>
                 <li>
                     <a href="{{ route('user.appointment.index') }}" class="nav-link"><i class="fas fa-calendar-alt "></i> Appointments</a>
                 </li>
-                <li>
-                    <a href="" class="nav-link">&middot;</a>
-                </li>
+                @endif
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-user"></i> {{ Auth::user()->username }}
+                       @include('components/blocks/user-icon')
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        @if(Auth::user()->is(['admin', 'staff']))
+                        <a class="dropdown-item" href="{{ route('admin.appointment.index') }}">Admin Page</a>
+                        @elseif(Auth::user()->is('doctor'))
+                        <a class="dropdown-item" href="{{ route('doctor.appointment.index') }}">Admin Page</a>
+
+                        @endif
                         <a class="dropdown-item" href="#">Profile</a>
-                        {!! Form::open(['url' => route('logout'), 'method' => 'post', 'class' => 'd-none', 'id' => 'logout-form']) !!}
+
+                        {!! Form::open(['url' => route('account.logout'), 'method' => 'post', 'class' => 'd-none', 'id' => 'logout-form']) !!}
                         {!! Form::close()  !!}
                         <a class="dropdown-item logout" href="#">Logout</a>
 
@@ -71,7 +77,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          {!! Form::open(['url' => route('admin.user.store'), 'method' => 'POST','class' => 'ajax']) !!}
+          {!! Form::open(['url' => route('account.register'), 'method' => 'POST','class' => 'ajax']) !!}
           <div class="modal-body">
 
             <div class="row">
@@ -135,7 +141,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                {!! Form::open(['url' => route('do.login'), 'method' => 'POST','class' => 'ajax']) !!}
+                {!! Form::open(['url' => route('account.login'), 'method' => 'POST','class' => 'ajax']) !!}
                     <div class="modal-body">
                         {!! Form::bsText('username', 'Your username') !!}
                         {!! Form::bsPassword('password', 'Then your password') !!}

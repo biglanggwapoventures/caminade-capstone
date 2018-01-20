@@ -16,6 +16,7 @@
             <th>Name</th>
             <th>Duration</th>
             <th class="text-right">Price</th>
+            <th>Status</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -26,7 +27,14 @@
             <td>{{ $row->duration }} minutes</td>
             <td class="text-right">{{ number_format($row->price, 2) }}</td>
             <td>
-                @include('components.form.index-actions', ['id' => $row->id])
+                @if($row->service_status === 'inactive')
+                    <span class="badge badge-warning badge-pill">INACTIVE</span>
+                @else
+                    <span class="badge badge-success badge-pill">ACTIVE</span>
+                @endif
+            </td>
+            <td>
+                @include('components.form.index-actions', ['id' => $row->id, 'hideRemove' => true])
             </td>
         </tr>
         @empty

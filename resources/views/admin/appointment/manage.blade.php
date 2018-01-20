@@ -143,14 +143,53 @@
                             <td id="product-total"> </td>
                             <td></td>
                     </tfoot>
-            </table>
+                </table>
             </div>
             <h4 class="mt-5">Post Appointment Findings</h4>
-            {!! Form::bsTextarea('parent[findings]', null, $resourceData->findings, ['rows' => 4]) !!}
+            <div class="card">
+                <table class="table dynamic mb-0" id="service-table"  data-service-details="{{ $serviceInfo->toJson() }}">
+                    <thead>
+                        <tr>
+                            <th class="bg-secondary text-white">Pet</th>
+                            <th class="bg-secondary text-white">Findings</th>
+                            <th class="bg-secondary text-white"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($resourceData->findings as $row)
+                        <tr>
+                            <td>
+                                {!! Form::bsSelect("findings[{$loop->index}][pet_id]", null, $customerPets, $row->pet_id, ['class' => 'pets custom-select  w-100', 'data-name' => 'findings[idx][pet_id]']) !!}
+                                {!! Form::hidden("findings[{$loop->index}][id]", $row->id) !!}
+                            </td>
+                            <td>
+                                {!! Form::bsText("findings[{$loop->index}][findings]", null, $row->findings, ['data-name' => 'findings[idx][findings]']) !!}
+                            </td>
+                            <td><button class="btn btn-danger remove-line" type="button"><i class="fas fa-times"></i></button></td>
+                        </tr>
+                        @empty
+                            <tr>
+                                <td>
+                                    {!! Form::bsSelect('findings[0][pet_id]', null, $customerPets ?: [],  null, ['class' => 'custom-select w-100 pets', 'data-name' => 'findings[idx][pet_id]']) !!}
+                                </td>
+                                <td>
+                                    {!! Form::bsText('findings[0][findings]', null, null,['data-name' => 'findings[idx][findings]']) !!}
+                                </td>
+                                <td><button class="btn btn-danger remove-line" type="button"><i class="fas fa-times"></i></button></td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3"><button type="button" class="btn btn-secondary add-line"><i class="fas fa-plus"></i> New line</button></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
             <hr>
             <div class="row">
                 <div class="col-4">
-                    {!! Form::bsSelect('parent[appointment_status]', 'Set appointment status', ['PENDING' => 'Pending', 'APPROVED' => 'Approved', 'DENIED' => 'Rejected'],$resourceData->appointment_status,['class' => 'custom-select w-100']) !!}
+                    {!! Form::bsSelect('parent[appointment_status]', 'Set appointment status', ['PENDING' => 'Pending', 'APPROVED' => 'Approved', 'DENIED' => 'Rejected', 'COMPLETED' => 'Completed'], $resourceData->appointment_status,['class' => 'custom-select w-100']) !!}
                 </div>
                 <div class="col">
                     {!! Form::bsText('parent[status_remarks]', 'Status Remarks', $resourceData->status_remarks) !!}
@@ -252,10 +291,8 @@
                 id = table.attr('id');
             if(tr.length === 1){
                 tr.find('select,input').val('')
-                    .end()
-                    .find('.clear').html('')
-                    end()
-                    .find('[type=hidden]').remove('');
+                tr .find('.clear').html('')
+                tr.find('[type=hidden]').remove('');
             }else{
                 $(this).closest('tr').remove();
             }

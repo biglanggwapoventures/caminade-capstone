@@ -33,9 +33,27 @@ class AppointmentController extends CRUDController
                 ],
             ],
             'update' => [
-
+                'parent.appointment_date' => 'required|date_format:Y-m-d',
+                'parent.appointment_time' => 'required|date_format:H:i',
+                'parent.remarks' => 'present',
+                'child.*.pet_id' => 'sometimes',
+                'child.*.pet_id' => [
+                    'required',
+                    Rule::exists($pet->getTable(), $pet->getKeyName())->where(function ($query) {
+                        $query->whereUserId(Auth::id());
+                    }),
+                ],
+                'child.*.service_id' => [
+                    'required',
+                    Rule::exists($service->getTable(), $service->getKeyName()),
+                ],
             ],
         ];
+    }
+
+    public function beforeIndex($query)
+    {
+        $query->ofCustomer(Auth::id());
     }
 
     public function beforeCreate()
@@ -53,5 +71,15 @@ class AppointmentController extends CRUDController
     public function beforeStore()
     {
         $this->validatedInput['parent']['customer_id'] = Auth::id();
+    }
+
+    public function beforeEdit($model)
+    {
+        $this->beforeCreate();
+    }
+
+    public function beforeShow($model)
+    {
+        $model->load(['line.service', 'line.pet.breed', 'doctor', 'usedProducts.product', 'findings']);
     }
 }

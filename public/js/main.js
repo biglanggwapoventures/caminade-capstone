@@ -1,10 +1,12 @@
 jQuery(document).ready(function($) {
     $('.modal').on('show.bs.modal', function() {
         var form = $(this).find('form');
+        if(!form.length) return;
         form[0].reset();
         form.find('.invalid-feedback').remove();
         form.find('.is-invalid').removeClass('is-invalid')
     })
+
     $('form.ajax').submit(function (e) {
         e.preventDefault();
 

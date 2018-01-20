@@ -11,6 +11,7 @@ class Service extends Model
         'description',
         'duration',
         'price',
+        'service_status',
     ];
 
     protected $casts = [
@@ -24,6 +25,6 @@ class Service extends Model
 
     public function scopeFieldsForMasterList($query)
     {
-        return $query;
+        return $query->orderBy('service_status')->orderBy('name');
     }
 }
