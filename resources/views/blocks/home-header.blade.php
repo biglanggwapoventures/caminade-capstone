@@ -113,16 +113,6 @@
                     {!! Form::bsPassword('password_confirmation', 'Password, Again', ['class' => 'form-control form-control-sm']) !!}
                 </div>
             </div>
-
-            <hr>
-
-            <p class="text-center">Or using the following platform:</p>
-            <div class="text-center">
-
-                <a href="{{ route('auth:facebook') }}" class="text-info"><i class="fab fa-facebook-square fa-2x"></i></a>
-                <a href="{{ route('auth:google') }}" class="text-danger"><i class="fab fa-google-plus-square fa-2x"></i></a>
-            </div>
-
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -143,8 +133,16 @@
                 </div>
                 {!! Form::open(['url' => route('account.login'), 'method' => 'POST','class' => 'ajax']) !!}
                     <div class="modal-body">
+
+
+
                         {!! Form::bsText('username', 'Your username') !!}
                         {!! Form::bsPassword('password', 'Then your password') !!}
+                        <div class="text-center">
+
+                            <a href="{{ route('auth:facebook') }}" class="text-info"><i class="fab fa-facebook-square fa-2x"></i></a>
+                            <a href="{{ route('auth:google') }}" class="text-danger"><i class="fab fa-google-plus-square fa-2x"></i></a>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

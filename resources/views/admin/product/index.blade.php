@@ -43,6 +43,7 @@
             </td>
             <td>
                 @include('components.form.index-actions', ['id' => $row->id, 'hideRemove' => true])
+                <a href="{{ route('admin.product.logs', ['product' => $row->id]) }}" class="btn btn-info">Logs</a>
             </td>
         </tr>
         @empty

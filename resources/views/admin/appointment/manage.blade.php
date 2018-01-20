@@ -170,7 +170,7 @@
                         @empty
                             <tr>
                                 <td>
-                                    {!! Form::bsSelect('findings[0][pet_id]', null, $customerPets ?: [],  null, ['class' => 'custom-select w-100 pets', 'data-name' => 'findings[idx][pet_id]']) !!}
+                                    {!! Form::bsSelect('findings[0][pet_id]', null, $customerPets ?? [],  null, ['class' => 'custom-select w-100 pets', 'data-name' => 'findings[idx][pet_id]']) !!}
                                 </td>
                                 <td>
                                     {!! Form::bsText('findings[0][findings]', null, null,['data-name' => 'findings[idx][findings]']) !!}

@@ -105,12 +105,14 @@ class AppointmentController extends CRUDController
     {
         $this->createRelations($model, 'products', 'usedProducts');
         $this->createRelations($model, 'findings', 'findings');
+        $model->usedProducts->each->saveProductLog();
     }
 
     public function afterUpdate($model)
     {
         $this->updateParentRelations($model, 'products', 'usedProducts');
         $this->updateParentRelations($model, 'findings', 'findings');
+        $model->usedProducts->each->saveProductLog();
     }
 
     public function beforeCreate()

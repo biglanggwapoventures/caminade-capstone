@@ -39,6 +39,8 @@ Route::group(['prefix' => 'management', 'namespace' => 'Admin', 'as' => 'admin.'
         Route::resource('supplier', 'SupplierController');
         Route::resource('appointment', 'AppointmentController');
         Route::resource('order', 'OrderController');
+
+        Route::get('{product}/logs', 'ProductLogController')->name('product.logs');
     });
 
 });
@@ -59,11 +61,6 @@ Route::group(['prefix' => 'user', 'namespace' => 'User', 'as' => 'user.', 'middl
 
 Route::group(['prefix' => 'doctor', 'namespace' => 'Doctor', 'as' => 'doctor.'], function () {
     Route::resource('appointment', 'AppointmentController');
-    // Route::group(['prefix' => 'appointment', 'as' => 'appointment.'], function () {
-    //     Route::get('/', 'AppointmentController@index')->name('index');
-    //     Route::get('{appointment}/manage', 'AppointmentController@manage')->name('manage');
-    //     Route::patch('{appointment}', 'AppointmentController@update')->name('update');
-    // });
 });
 
 Route::get('our-products', 'ProductShowcaseController')->name('product-showcase');
