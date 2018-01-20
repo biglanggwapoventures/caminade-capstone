@@ -50,11 +50,6 @@ class PetController extends CRUDController
         $query->with('owner');
     }
 
-    public function beforeStore()
-    {
-        $this->validatedInput['user_id'] = 1;
-    }
-
     public function beforeCreate()
     {
         $this->viewData['reproductiveAlterations'] = PetReproductiveAlteration::dropdownFormat();
