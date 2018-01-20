@@ -33,6 +33,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('admin.order.index') }}">Orders</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('admin.appointment.index') }}">Appointments</a>
+                    </li>
                     @endif
 
                     @if(Auth::user()->is('admin'))

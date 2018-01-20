@@ -35,7 +35,7 @@
             <td>{{ number_format($row->price, 2) }}</td>
             <td>{{ number_format($row->stock) }}</td>
             <td>
-                @if($row->service_status === 'inactive')
+                @if($row->product_status === 'inactive')
                     <span class="badge badge-warning badge-pill">INACTIVE</span>
                 @else
                     <span class="badge badge-success badge-pill">ACTIVE</span>

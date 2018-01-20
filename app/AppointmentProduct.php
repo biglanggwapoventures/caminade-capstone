@@ -32,4 +32,23 @@ class AppointmentProduct extends Model
     {
         return $this->belongsTo(Appointment::class);
     }
+
+    public function productLog()
+    {
+        return $this->morphOne(ProductLog::class, 'log', 'causer', 'causer_id');
+    }
+
+    public function saveProductLog($quantity = null)
+    {
+        $data = [
+            'quantity' => ($quantity ?: $this->quantity) * -1,
+            'product_id' => $this->product_id,
+        ];
+        if ($this->productLog()->exists()) {
+            return $this->productLog()->update($data);
+        }
+
+        $data['remarks'] = "appointment # {$this->appointment_id} (used product)";
+        return $this->productLog()->create($data);
+    }
 }
