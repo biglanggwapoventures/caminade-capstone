@@ -9,7 +9,7 @@ class ProductLog extends Model
     protected $fillable = [
         'product_id',
         'causer',
-        'cause_id',
+        'causer_id',
         'quantity',
         'remarks',
     ];

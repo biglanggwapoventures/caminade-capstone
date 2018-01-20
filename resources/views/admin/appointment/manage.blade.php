@@ -1,7 +1,6 @@
 @extends('admin.layouts.main')
 @push('css')
 @endpush
-<link rel="stylesheet" href="{{ asset('css/fontawesome-all.min.css') }}">
 <style type="text/css">
 
 

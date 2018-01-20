@@ -1,6 +1,5 @@
 @extends('admin.layouts.main')
 
-
 @section('body')
 <div class="row mt-4">
     <div class="col">
@@ -20,6 +19,7 @@
             <th>Supplier</th>
             <th>Price</th>
             <th>Stock on hand</th>
+            <th>Reorder Level</th>
             <th>Status</th>
             <th></th>
         </tr>
@@ -33,7 +33,19 @@
             <td>{{ $row->category->description }}</td>
             <td>{{ $row->supplier->description }}</td>
             <td>{{ number_format($row->price, 2) }}</td>
-            <td>{{ number_format($row->stock) }}</td>
+            <td>
+                {{ number_format($row->stock_on_hand) }} <br>
+                 @if($row->stock_on_hand <= $row->reorder_level)
+                    <span class="text-danger"><i class="fas fa-arrow-down"></i> LOW</span>
+                @else
+                    <span class="text-success"><i class="fas fa-arrow-up"></i> HIGH</span>
+                @endif
+                <br>
+            </td>
+            <td>
+                {{ $row->reorder_level }}
+
+            </td>
             <td>
                 @if($row->product_status === 'inactive')
                     <span class="badge badge-warning badge-pill">INACTIVE</span>

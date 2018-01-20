@@ -21,20 +21,22 @@ class OrderController extends CRUDController
                 'parent.customer_id' => ['required', Rule::exists($customer->getTable(), $customer->getKeyName())],
                 'parent.order_date' => ['required', 'date'],
                 'parent.remarks' => ['present', 'nullable'],
-                'child.*.product_id' => ['required', Rule::exists($product->getTable(), $product->getKeyName())],
-                'child.*.quantity' => ['required', 'numeric'],
+                'child.*.product_id' => ['required', 'distinct', Rule::exists($product->getTable(), $product->getKeyName())],
+                'child.*.stock' => ['required', 'numeric'],
+                // 'child.*.quantity' => ['required', 'numeric', 'max:child.*.stock'],
                 'child.*.unit_price' => ['required', 'numeric'],
-                'child.*.discount' => ['required', 'numeric'],
+                'child.*.discount' => ['nullable', 'numeric'],
             ],
             'update' => [
                 'parent.customer_id' => ['required', Rule::exists($customer->getTable(), $customer->getKeyName())],
                 'parent.order_date' => ['required', 'date'],
                 'parent.remarks' => ['present', 'nullable'],
                 'child.*.id' => ['sometimes', Rule::exists($line->getTable(), $line->getKeyName())],
-                'child.*.product_id' => ['required', Rule::exists($product->getTable(), $product->getKeyName())],
-                'child.*.quantity' => ['required', 'numeric'],
+                'child.*.product_id' => ['required', 'distinct', Rule::exists($product->getTable(), $product->getKeyName())],
+                'child.*.stock' => ['required', 'numeric'],
+                // 'child.*.quantity' => ['required', 'numeric', 'max:child.*.stock'],
                 'child.*.unit_price' => ['required', 'numeric'],
-                'child.*.discount' => ['required', 'numeric'],
+                'child.*.discount' => ['nullable', 'numeric'],
             ],
         ];
     }
@@ -46,7 +48,7 @@ class OrderController extends CRUDController
 
     public function beforeCreate()
     {
-        $products = Product::select('id', 'name', 'price')->orderBy('name')->get();
+        $products = Product::with('logs')->orderBy('name')->get(['id', 'name', 'price']);
 
         $this->viewData['customerList'] = User::customerList()->prepend('', '');
         $this->viewData['productList'] = $products->pluck('name', 'id')->prepend('', '');

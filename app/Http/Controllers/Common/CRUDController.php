@@ -329,7 +329,7 @@ class CRUDController extends Controller
                 $multipleChild[] = $row;
             }
             if (!empty($multipleChild)) {
-                $model->{$relation}()->createMany($child);
+                $model->{$relation}()->createMany($multipleChild);
             }
         } else {
             $model->{$relation}()->create($child);

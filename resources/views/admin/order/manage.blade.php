@@ -1,7 +1,6 @@
 @extends('admin.layouts.main')
 @push('css')
 @endpush
-<link rel="stylesheet" href="{{ asset('css/fontawesome-all.min.css') }}">
 <style type="text/css">
 
 
@@ -61,10 +60,13 @@
                                 {!! Form::bsSelect("child[{$loop->index}][product_id]", null, $productList, $row->product_id, ['class' => 'product custom-select  w-100', 'data-name' => 'child[idx][product_id]']) !!}
                                 {!! Form::hidden("child[{$loop->index}][id]", $row->id) !!}
                             </td>
-                            <td>{!! Form::bsText("child[{$loop->index}][quantity]", null, $row->quantity, ['data-name' => 'child[idx][quantity]', 'class' => 'form-control quantity']) !!}</td>
+                            <td>
+                                {!! Form::bsText("child[{$loop->index}][quantity]", null, $row->quantity, ['data-name' => 'child[idx][quantity]', 'class' => 'form-control quantity']) !!}
+                                {!! Form::hidden('child[0][stock]', null, ['data-name' => 'child[idx][stock]', 'class' => 'stock ignore']) !!}
+                            </td>
                             <td class="product-price clear"></td>
                             <td>
-                                {!! Form::hidden("child[{$loop->index}][unit_price]", null, ['data-name' => 'child[idx][unit_price]', 'class' => 'form-control unit-price']) !!}
+                                {!! Form::hidden("child[{$loop->index}][unit_price]", null, ['data-name' => 'child[idx][unit_price]', 'class' => 'form-control unit-price ignore']) !!}
                                 {!! Form::bsText("child[{$loop->index}][discount]", null, $row->discount, ['data-name' => 'child[idx][discount]', 'class' => 'form-control discount']) !!}
                             </td>
                             <td class="amount clear"></td>
@@ -74,10 +76,13 @@
                         @empty
                         <tr>
                             <td>{!! Form::bsSelect('child[0][product_id]', null, $productList, null, ['class' => 'product custom-select  w-100', 'data-name' => 'products[idx][product_id]']) !!}</td>
-                            <td>{!! Form::bsText('child[0][quantity]', null, null, ['data-name' => 'child[idx][quantity]', 'class' => 'form-control quantity']) !!}</td>
+                            <td>
+                                {!! Form::bsText('child[0][quantity]', null, null, ['data-name' => 'child[idx][quantity]', 'class' => 'form-control quantity']) !!}
+                                {!! Form::hidden('child[0][stock]', null, ['data-name' => 'child[idx][stock]', 'class' => 'stock ignore']) !!}
+                            </td>
                             <td class="product-price clear"></td>
                             <td>
-                                {!! Form::hidden('child[0][unit_price]', null, ['data-name' => 'child[idx][unit_price]', 'class' => 'form-control unit-price']) !!}
+                                {!! Form::hidden('child[0][unit_price]', null, ['data-name' => 'child[idx][unit_price]', 'class' => 'unit-price ignore']) !!}
                                 {!! Form::bsText('child[0][discount]', null, null, ['data-name' => 'child[idx][discount]', 'class' => 'form-control discount']) !!}
                             </td>
                             <td class="amount clear"></td>
@@ -129,10 +134,12 @@
             if(!product) return;
 
             var productInfo = products[product],
-                unitPrice = productInfo['price'].toFixed(2);
+                unitPrice = productInfo['price'].toFixed(2),
+                stock = productInfo['stock_on_hand'].toFixed(2);
 
             tr.find('.product-price').text(unitPrice);
             tr.find('.unit-price').val(unitPrice);
+            tr.find('.stock').val(stock);
 
             $('#product-table').trigger('table:changed');
             $('.quantity').trigger('change');
@@ -178,7 +185,7 @@
             if(tr.length === 1){
                 tr.find('select,input').val('')
                 tr .find('.clear').html('')
-                tr.find('[type=hidden]').remove('');
+                tr.find('[type=hidden]:not(.ignore)').remove();
             }else{
                 $(this).closest('tr').remove();
             }

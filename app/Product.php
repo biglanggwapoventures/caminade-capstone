@@ -30,6 +30,7 @@ class Product extends Model
 
     protected $appends = [
         'photo_src',
+        'stock_on_hand',
     ];
 
     public function supplier()
@@ -44,12 +45,17 @@ class Product extends Model
 
     public function scopeFieldsForMasterList($query)
     {
-        return $query->with(['supplier', 'category'])->orderBy('product_status')->orderBy('name');
+        return $query->with(['supplier', 'category', 'logs'])->orderBy('product_status')->orderBy('name');
     }
 
     public function getPhotoSrcAttribute()
     {
         return asset("storage/{$this->photo_path}");
+    }
+
+    public function logs()
+    {
+        return $this->hasMany(ProductLog::class, 'product_id');
     }
 
     public function beginningBalanceLog()
@@ -62,14 +68,27 @@ class Product extends Model
         $log = $this->beginningBalanceLog()->firstOrNew([
             'quantity' => $quantity ?: $this->stock,
             'product_id' => $this->id,
-            'remarks' => 'begnning balance',
+            'remarks' => 'Beginning Balance',
         ]);
         $log->save();
         return $log;
     }
 
-    public function logDecrements()
+    public function adjustQuantity($quantity)
     {
-        # code...
+        $this->logs()->create([
+            'causer' => get_class($this),
+            'causer_id' => $this->id,
+            'remarks' => 'Stock Adjustment @' . now()->format('m/d/Y h:i A'),
+            'quantity' => $quantity,
+        ]);
+    }
+
+    public function getStockOnHandAttribute()
+    {
+        if ($this->relationLoaded('logs')) {
+            return $this->logs->sum('quantity');
+        }
+        return 0;
     }
 }

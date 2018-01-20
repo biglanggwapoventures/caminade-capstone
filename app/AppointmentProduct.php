@@ -48,7 +48,7 @@ class AppointmentProduct extends Model
             return $this->productLog()->update($data);
         }
 
-        $data['remarks'] = "appointment # {$this->appointment_id} (used product)";
+        $data['remarks'] = "Appointment # {$this->appointment_id} (Used Product)";
         return $this->productLog()->create($data);
     }
 }

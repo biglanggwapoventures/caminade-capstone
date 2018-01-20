@@ -8,10 +8,26 @@ use Illuminate\Http\Request;
 
 class ProductLogController extends Controller
 {
-    public function __invoke(Product $product, Request $request)
+    public function index(Product $product, Request $request)
     {
+        $product->load(['logs' => function ($q) {
+            return $q->selectRaw('*, (SELECT SUM(inner_log.quantity) FROM product_logs AS inner_log WHERE inner_log.product_id = product_logs.product_id AND inner_log.id <= product_logs.id GROUP BY inner_log.product_id) AS balance')
+                ->orderBy('id');
+        }]);
+        // dd($product->toArray());
         return view('admin.product-logs', [
             'product' => $product,
         ]);
+    }
+
+    public function adjust(Product $product, Request $request)
+    {
+        $request->validate([
+            'quantity' => 'numeric',
+        ]);
+
+        $product->adjustQuantity($request->quantity);
+
+        return redirect()->back();
     }
 }

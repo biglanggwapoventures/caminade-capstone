@@ -55,7 +55,12 @@ class OrderLine extends Model
             return $this->productLog()->update($data);
         }
 
-        $data['remarks'] = "order # {$this->order_id}";
+        $data['remarks'] = "Order # {$this->order_id}";
         return $this->productLog()->create($data);
+    }
+
+    public function setDiscountAttribute($val)
+    {
+        $this->attributes['discount'] = $val ?: 0;
     }
 }

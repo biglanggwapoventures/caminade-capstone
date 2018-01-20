@@ -40,7 +40,8 @@ Route::group(['prefix' => 'management', 'namespace' => 'Admin', 'as' => 'admin.'
         Route::resource('appointment', 'AppointmentController');
         Route::resource('order', 'OrderController');
 
-        Route::get('{product}/logs', 'ProductLogController')->name('product.logs');
+        Route::get('{product}/logs', 'ProductLogController@index')->name('product.logs');
+        Route::post('{product}/logs', 'ProductLogController@adjust')->name('product.logs.adjust');
     });
 
 });

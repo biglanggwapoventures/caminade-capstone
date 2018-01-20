@@ -1,4 +1,8 @@
 @extends('admin.layouts.layout')
+@push('css')
+<link rel="stylesheet" href="{{ asset('css/fontawesome-all.min.css') }}">
+@endpush
+
 
 @section('content')
     <div class="container">
