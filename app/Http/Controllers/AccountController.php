@@ -49,14 +49,17 @@ class AccountController extends Controller
         ]);
 
         if ($validator->passes()) {
-            if (Auth::attempt($request->all(['username', 'password']))) {
-
-                $nextUrl = Auth::user()->is('customer') ? route('home') : route('admin.appointment.index');
-
-                return response()->json([
-                    'result' => true,
-                    'next_url' => $nextUrl,
-                ]);
+            $credentials = $request->all(['username', 'password']);
+            if (Auth::attempt($credentials)) {
+                if (Auth::user()->is_blocked) {
+                    $validator->errors()->add('username', 'This account has been blocked!');
+                    Auth::logout();
+                } else {
+                    return response()->json([
+                        'result' => true,
+                        'next_url' => $this->getNextUrl(),
+                    ]);
+                }
             } else {
                 $validator->errors()->add('password', 'You entered an incorrect password');
             }
@@ -72,6 +75,42 @@ class AccountController extends Controller
     {
         Auth::logout();
         return redirect()->route('home');
+    }
+
+    protected function getNextUrl()
+    {
+        switch (strtolower(Auth::user()->role)) {
+            case 'doctor':
+                return route('doctor.appointment.index');
+            case 'customer':
+                return route('home');
+            default:
+                return route('admin.appointment.index');
+        }
+    }
+
+    public function update(Request $request)
+    {
+        $input = $request->validate([
+            'firstname' => 'required',
+            'lastname' => 'required',
+            'contact_number' => 'required',
+            'address' => 'required',
+            'gender' => ['required', Rule::in(['MALE', 'FEMALE'])],
+            'email' => ['required', 'email', Rule::unique($this->model->getTable())->ignore(Auth::id())],
+            'password' => 'nullable|min:6',
+            'password_confirmation' => 'nullable|same:password',
+        ]);
+
+        if (!trim($input['password'])) {
+            unset($input['password'], $input['password_confirmation']);
+        }
+
+        Auth::user()->fill($input)->save();
+
+        return response()->json([
+            'result' => true,
+        ]);
     }
 
 }

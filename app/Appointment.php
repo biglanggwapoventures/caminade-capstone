@@ -5,6 +5,8 @@ namespace App;
 use App\AppointmentFinding;
 use App\AppointmentLine;
 use App\AppointmentProduct;
+use App\Facades\SMS;
+use App\PetLog;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 
@@ -148,6 +150,30 @@ class Appointment extends Model
     public function getAppointmentStatusAttribute($val)
     {
         return $this->completed_at ? 'COMPLETED' : $val;
+    }
+
+    public function petLogs()
+    {
+        return $this->hasMany(PetLog::class);
+    }
+
+    public function sendApprovalSMS()
+    {
+
+    }
+
+    public function sendRejectionSMS()
+    {
+
+    }
+
+    public function sendUpdateSMS()
+    {
+        $appointmentTime = date_create_from_format('H:i', $this->appointment_time)->format('h:i a');
+
+        $message = new SMS($this->customer->contact_number, "PetCare: You have an appointment today @ {$appointmentTime}. Please be guided. Thank you!");
+
+        return $message->send();
     }
 
 }

@@ -125,6 +125,8 @@ return [
 
     'log_level' => env('APP_LOG_LEVEL', 'debug'),
 
+    'itexmo_api_code' => env('ITEXMO_API_CODE', ''),
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers

@@ -9,6 +9,7 @@ class PetReproductiveAlteration extends Model
 {
     protected $fillable = [
         'description',
+        'gender',
     ];
 
     public function pets()
@@ -23,6 +24,18 @@ class PetReproductiveAlteration extends Model
 
     public static function dropdownFormat()
     {
-        return self::orderBy('description')->pluck('description', 'id')->prepend('', '');
+        return self::orderBy('description')
+            ->get()
+            ->groupBy('gender')
+            ->mapWithKeys(function ($options, $gender) {
+                return [$gender => $options->pluck('description', 'id')];
+            })
+            ->prepend('', '')
+            ->toArray();
+    }
+
+    public function getGenderAttribute($val)
+    {
+        return $val ?: 'N/A';
     }
 }

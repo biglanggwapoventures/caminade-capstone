@@ -10,10 +10,10 @@
 </div>
 {!! Form::open(['url' => MyHelper::resource('index'), 'method' => 'GET', 'class' => 'form-inline mb-2 mt-2']) !!}
 
-  <div class="form-group">
-    <label for="inputPassword2" class="ml-1">Customer</label>
-    {!! Form::select('customer_id', $customerList, null, ['class' => 'custom-select ml-1', '']) !!}
-  </div>
+    <div class="form-group">
+    <label class="ml-1">Customer</label>
+        {!! Form::text('customer_name', null, ['class' => 'form-control ml-1']) !!}
+    </div>
   <div class="form-group">
     <label for="inputPassword2" class="ml-1">From</label>
     {!! Form::date('from', null, ['class' => 'form-control ml-1', '']) !!}
@@ -38,8 +38,8 @@
         @forelse($resourceList As $row)
             <tr>
                 <td>{{ $row->id }}</td>
-                <td>{{ $row->customer->fullname }}</td>
-                <td>{{ date_create($row->appointment_date)->format('m/d/Y') }}</td>
+                <td>{{ $row->customer_id ? $row->customer->fullname : $row->customer_name }}</td>
+                <td>{{ date_create($row->created_at)->format('m/d/Y') }}</td>
                 <td>{{ number_format($row->total_amount) }}</td>
                 <td>
                     @include('components.form.index-actions', ['id' => $row->id, 'hideRemove' => true])

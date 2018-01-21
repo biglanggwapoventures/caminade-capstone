@@ -33,10 +33,13 @@
         @endif
             <div class="row">
                 <div class="col-4">
+                    {!! Form::bsSelect('order_type', 'Order Type', ['' => '', 'IN_HOUSE' => 'In House', 'WALK_IN'=> 'Walk In']) !!}
+                </div>
+                <div class="col-4 d-none fg">
                     {!! Form::bsSelect('parent[customer_id]', 'Customer', $customerList, $resourceData->customer_id, ['class' => 'custom-select w-100']) !!}
                 </div>
-                <div class="col-3">
-                    {!! Form::bsDate('parent[order_date]', 'Date', $resourceData->order_date) !!}
+                <div class="col-4 d-none fg">
+                    {!! Form::bsText('parent[customer_name]', 'Customer Name', $resourceData->customer_name, ['class' => 'form-control']) !!}
                 </div>
             </div>
             {!! Form::bsTextarea('parent[remarks]', 'Remarks', null, ['rows' => 3]) !!}
@@ -195,6 +198,17 @@
         $('#product-table').on('table:changed', function () {
             $(this).find('#product-total').text(getProducTotal().toFixed(2))
         }).trigger('table:changed');
+
+        $('[name=order_type]').change(function () {
+            var type = $(this).val();
+            if(type === 'WALK_IN'){
+                $('[name="parent[customer_name]"]').closest('.fg').removeClass('d-none');
+                $('[name="parent[customer_id]"]').closest('.fg').addClass('d-none');
+            }else if(type === 'IN_HOUSE'){
+               $('[name="parent[customer_name]"').closest('.fg').addClass('d-none');
+                $('[name="parent[customer_id]"]').closest('.fg').removeClass('d-none');
+            }
+        }).trigger('change');
     });
 </script>
 @endpush

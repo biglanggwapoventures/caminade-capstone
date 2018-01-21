@@ -53,12 +53,33 @@
                         <a class="nav-link" href="{{ route('doctor.appointment.index') }}">Appointments</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin.appointment.index') }}">Pets</a>
+                        <a class="nav-link" href="{{ route('admin.pet.index') }}">Pets</a>
                     </li>
                     @endif
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                           @include('components/blocks/user-icon')
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{{ route('home') }}">Homepage</a>
+                            <a class="dropdown-item" data-toggle="modal" data-target="#profile" href="javascript:void()">Profile</a>
+
+                            {!! Form::open(['url' => route('account.logout'), 'method' => 'post', 'class' => 'd-none', 'id' => 'logout-form']) !!}
+                            {!! Form::close()  !!}
+                            <a class="dropdown-item logout" href="#">Logout</a>
+
+                        </div>
+                    </li>
                 </ul>
             </div>
         </nav>
         @yield('body')
     </div>
 @endsection
+
+
+@push('modals')
+@include('blocks.customer-modal')
+@endpush

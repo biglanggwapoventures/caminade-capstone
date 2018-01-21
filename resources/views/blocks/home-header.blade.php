@@ -51,7 +51,7 @@
                         <a class="dropdown-item" href="{{ route('doctor.appointment.index') }}">Admin Page</a>
 
                         @endif
-                        <a class="dropdown-item" href="#">Profile</a>
+                        <a class="dropdown-item" data-toggle="modal" data-target="#profile" href="javascript:void()">Profile</a>
 
                         {!! Form::open(['url' => route('account.logout'), 'method' => 'post', 'class' => 'd-none', 'id' => 'logout-form']) !!}
                         {!! Form::close()  !!}
@@ -66,7 +66,7 @@
 </header>
 
 
-@if(Auth::guest())
+@guest
     @push('modals')
     <div class="modal fade" id="register" tabindex="-1" role="dialog" aria-labelledby="register-title" aria-hidden="true">
       <div class="modal-dialog" role="document">
@@ -153,4 +153,8 @@
         </div>
     </div>
     @endpush
-@endif
+@endauth
+
+@push('modals')
+@include('blocks.customer-modal')
+@endpush

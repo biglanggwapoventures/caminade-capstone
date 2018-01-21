@@ -34,7 +34,7 @@
                 @endif
             </td>
             <td>
-                @include('components.form.index-actions', ['id' => $row->id, 'hideRemove' => true])
+                @includeWhen(Auth::user()->is('admin'), 'components.form.index-actions', ['id' => $row->id, 'hideRemove' => true])
             </td>
         </tr>
         @empty

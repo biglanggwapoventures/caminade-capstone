@@ -24,6 +24,7 @@
         @endif
 
             {!! Form::bsText('description', 'Description') !!}
+             {!! Form::bsSelect('gender', 'Gender', ['' => '', 'MALE' => 'MALE', 'FEMALE' => 'FEMALE'], null, ['class' => 'custom-select w-100']) !!}
             <button type="submit" class="btn btn-success">Save</button>
 
         {!! Form::close() !!}

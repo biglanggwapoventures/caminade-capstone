@@ -58,7 +58,7 @@ jQuery(document).ready(function($) {
 
                     }
                 }else{
-                    alertify.alert('An internal server error has occured. Please refresh the page. If the error still persists. Please contact your system administrator.');
+                    window.alert('An internal server error has occured. Please refresh the page. If the error still persists. Please contact your system administrator.');
                 }
             },
             complete: function () {

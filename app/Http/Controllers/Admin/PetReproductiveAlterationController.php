@@ -15,9 +15,11 @@ class PetReproductiveAlterationController extends CRUDController
         $this->validationRules = [
             'store' => [
                 'description' => ['required', Rule::unique($model->getTable())],
+                'gender' => ['nullable', Rule::in(['MALE', 'FEMALE'])],
             ],
             'update' => [
                 'description' => ['required', Rule::unique($model->getTable())->ignore(request()->route('pet_reproductive_alteration'))],
+                'gender' => ['nullable', Rule::in(['MALE', 'FEMALE'])],
             ],
         ];
     }

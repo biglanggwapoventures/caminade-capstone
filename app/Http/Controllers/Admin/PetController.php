@@ -13,6 +13,8 @@ class PetController extends CRUDController
 {
     public function __construct(Pet $model)
     {
+        $this->middleware('role:admin,staff', ['except' => ['show', 'index']]);
+        $this->middleware('role:admin,staff,doctor', ['only' => ['show', 'index']]);
         parent::__construct();
         $this->resourceModel = $model;
         $this->validationRules = [
@@ -55,6 +57,11 @@ class PetController extends CRUDController
         $this->viewData['reproductiveAlterations'] = PetReproductiveAlteration::dropdownFormat();
         $this->viewData['breeds'] = PetCategory::dropdownFormatWithBreeds();
         $this->viewData['customers'] = User::customerList();
+    }
+
+    public function beforeShow($model)
+    {
+        $model;
     }
 
     public function beforeEdit($model)

@@ -67,18 +67,26 @@ class Pet extends Model
 
     public function findings()
     {
-        return $this->hasMany(AppointmentFinding::class);
+        return $this->hasMany(AppointmentFinding::class)->whereHas('appointment', function ($q) {
+            $q->whereNotNull('completed_at');
+        })->orderBy('created_at', 'desc');
+    }
+
+    public function petLogs()
+    {
+        return $this->hasMany(PetLog::class)->whereHas('appointment', function ($q) {
+            $q->whereAppointmentStatus('APPROVED')->whereNotNull('completed_at');
+        })->orderBy('log_date', 'desc')->orderBy('log_time', 'desc');
     }
 
     public function medicalHistory()
     {
-        return $this->findings()
-            ->whereHas('appointment', function ($q) {
-                $q->whereNotNull('completed_at');
-            })
-            ->orderBy('created_at')
-            ->with('appointment.doctor')
-            ->get();
+        return $this->findings()->with('appointment.doctor')->get();
+    }
+
+    public function logs()
+    {
+        return $this->petLogs()->get();
     }
 
 }

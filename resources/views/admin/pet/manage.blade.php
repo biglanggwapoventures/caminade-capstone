@@ -51,3 +51,36 @@
         {!! Form::close() !!}
 
 @endsection
+
+
+
+
+@push('scripts')
+<script type="text/javascript">
+    jQuery(document).ready(function($) {
+        $('[name=gender]').change(function () {
+            var val = $(this).val();
+
+            if(!val) return;
+
+            $('[name=pet_reproductive_alteration_id]').val('');
+
+            var hide = '',
+                show = '';
+            if(val === 'MALE'){
+                hide = 'FEMALE';
+                show = 'MALE';
+            }else if(val === 'FEMALE') {
+                hide = 'MALE';
+                show = 'FEMALE';
+            }
+
+            $('[name=pet_reproductive_alteration_id] optgroup[label='+show+']').removeClass('d-none');
+            $('[name=pet_reproductive_alteration_id] optgroup[label='+hide+']').addClass('d-none');
+
+
+
+        }).trigger('change');
+    });
+</script>
+@endpush

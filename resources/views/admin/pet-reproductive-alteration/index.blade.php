@@ -14,6 +14,7 @@
     <thead class="thead-dark">
         <tr>
             <th>Description</th>
+            <th>Gender</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -21,6 +22,7 @@
         @forelse($resourceList as $row)
         <tr>
             <td>{{ $row->description }}</td>
+            <td>{{ $row->gender }}</td>
             <td>
                 @include('components.form.index-actions', ['id' => $row->id])
             </td>

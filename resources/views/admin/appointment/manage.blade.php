@@ -47,10 +47,10 @@
                     </div>
                 </div>
                 <div class="col-4">
-                    {!! Form::bsSelect('parent[doctor_id]', 'Assgined Doctor', $doctorList, $resourceData->doctor_id, ['class' => 'custom-select w-100']) !!}
+                    {!! Form::bsSelect('parent[doctor_id]', 'Assigned Doctor', $doctorList, $resourceData->doctor_id, ['class' => 'custom-select w-100']) !!}
                 </div>
             </div>
-            {!! Form::bsTextarea('parent[remarks]', 'Remarks', null, ['rows' => 3]) !!}
+            {!! Form::bsTextarea('parent[remarks]', 'Remarks', $resourceData->remarks, ['rows' => 3]) !!}
             <h4 class="mt-5">Services Rendered</h4>
             <div class="card">
                 <table class="table dynamic mb-0" id="service-table"  data-service-details="{{ $serviceInfo->toJson() }}">
@@ -141,6 +141,60 @@
                             <td colspan="2" class="text-right">Total</td>
                             <td id="product-total"> </td>
                             <td></td>
+                    </tfoot>
+                </table>
+            </div>
+            <h4 class="mt-5">Pet Logs</h4>
+            <div class="card">
+                <table class="table dynamic mb-0" id="service-table"  data-service-details="{{ $serviceInfo->toJson() }}">
+                    <thead>
+                        <tr>
+                            <th class="bg-secondary text-white">Pet</th>
+                            <th class="bg-secondary text-white">Date</th>
+                            <th class="bg-secondary text-white">Time</th>
+                            <th class="bg-secondary text-white">Content</th>
+                            <th class="bg-secondary text-white"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($resourceData->petLogs as $row)
+                        <tr>
+                            <td>
+                                    {!! Form::bsSelect("pet_logs[{$loop->index}][pet_id]", null, $customerPets ?? [],  $row->pet_id, ['class' => 'custom-select w-100 pets', 'data-name' => 'pet_logs[idx][pet_id]']) !!}
+                                </td>
+                                <td>
+                                    {!! Form::bsDate("pet_logs[{$loop->index}][log_date]", null, $row->log_date, ['class' => 'form-control', 'data-name' => 'pet_logs[idx][log_date]']) !!}
+                                </td>
+                                <td>
+                                    {!! Form::bsTime("pet_logs[{$loop->index}][log_time]", null, $row->log_time, ['class' => 'form-control', 'data-name' => 'pet_logs[idx][log_time]']) !!}
+                                </td>
+                                <td>
+                                      {!! Form::bsText("pet_logs[{$loop->index}][remarks]", null, $row->remarks, ['data-name' => 'pet_logs[idx][remarks]']) !!}
+                                </td>
+                            <td><button class="btn btn-danger remove-line" type="button"><i class="fas fa-times"></i></button></td>
+                        </tr>
+                        @empty
+                            <tr>
+                                <td>
+                                    {!! Form::bsSelect('pet_logs[0][pet_id]', null, $customerPets ?? [],  null, ['class' => 'custom-select w-100 pets', 'data-name' => 'pet_logs[idx][pet_id]']) !!}
+                                </td>
+                                <td>
+                                    {!! Form::bsDate('pet_logs[0][log_date]', null, null, ['class' => 'form-control', 'data-name' => 'pet_logs[idx][log_date]']) !!}
+                                </td>
+                                <td>
+                                    {!! Form::bsTime('pet_logs[0][log_time]', null, null, ['class' => 'form-control', 'data-name' => 'pet_logs[idx][log_time]']) !!}
+                                </td>
+                                <td>
+                                      {!! Form::bsText('pet_logs[0][remarks]', null, null,['data-name' => 'pet_logs[idx][remarks]']) !!}
+                                </td>
+                                <td><button class="btn btn-danger remove-line" type="button"><i class="fas fa-times"></i></button></td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="5"><button type="button" class="btn btn-secondary add-line"><i class="fas fa-plus"></i> New log</button></td>
+                        </tr>
                     </tfoot>
                 </table>
             </div>

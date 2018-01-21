@@ -70,3 +70,19 @@
         {!! Form::close() !!}
 
 @endsection
+
+
+@push('scripts')
+    <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            $('[name=role]').change(function () {
+                var role = ['DOCTOR', 'STAFF'];
+                if(role.indexOf($(this).val()) === -1){
+                    $('[name=role_title]').closest('.form-group').addClass('d-none');
+                    return;
+                }
+                $('[name=role_title]').closest('.form-group').removeClass('d-none');
+            }).trigger('change')
+        });
+    </script>
+@endpush

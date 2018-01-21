@@ -107,7 +107,7 @@
                 </div>
                 <div class="tab-pane fade" id="nav-appointment-history" role="tabpanel" aria-labelledby="nav-appointment-history-tab">
                     <div class="alert alert-info p-2 mb-2">
-                        <i class="fas fa-info-circle"></i> Only approved and commpleted appointments are listed here.
+                        <i class="fas fa-info-circle"></i> Only approved and completed medical histories from appointments are listed here.
                     </div>
                     <table class="table table-sm">
                         <thead>
@@ -119,16 +119,41 @@
                         </thead>
                         <tbody>
                             @forelse($pet->medicalHistory() AS $log)
-                                <td>{{ date_create($log->created_at)->format('m/d/Y h:i A') }}</td>
-                                <td>{{ $log->findings }}</td>
-                                <td>{{ $log->appointment->doctor->fullname }}</td>
+                                <tr>
+                                    <td>{{ date_create($log->created_at)->format('m/d/Y h:i A') }}</td>
+                                    <td>{{ $log->findings }}</td>
+                                    <td>{{ $log->appointment->doctor->fullname }}</td>
+                                </tr>
+
                             @empty
 
                             @endforelse
                         </tbody>
                     </table>
                 </div>
-                <div class="tab-pane fade" id="nav-logs" role="tabpanel" aria-labelledby="nav-logs-tab">logs</div>
+                <div class="tab-pane fade" id="nav-logs" role="tabpanel" aria-labelledby="nav-logs-tab">
+                    <div class="alert alert-info p-2 mb-2">
+                        <i class="fas fa-info-circle"></i> Only approved and completed logs from appointmets are listed here.
+                    </div>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Log</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($pet->logs() AS $log)
+                                <tr>
+                                    <td>{{ $log->timestamp->format('m/d/Y h:i A') }}</td>
+                                    <td>{{ $log->remarks }}</td>
+                                </tr>
+                            @empty
+
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
             {!! Form::close() !!}
             @endif

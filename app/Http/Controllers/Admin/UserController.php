@@ -41,7 +41,7 @@ class UserController extends CRUDController
             'address' => ['sometimes'],
             'gender' => ['required', Rule::in(['MALE', 'FEMALE'])],
             'role' => ['sometimes', Rule::in(['DOCTOR', 'CUSTOMER', 'STAFF', 'ADMIN'])],
-            'role_title' => ['required'],
+            'role_title' => 'nullable',
         ];
 
         if ($method === 'store') {

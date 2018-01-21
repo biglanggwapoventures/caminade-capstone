@@ -12,6 +12,7 @@ class Order extends Model
     use SoftDeletes;
 
     protected $fillable = [
+        'customer_name',
         'customer_id',
         'order_date',
         'remarks',
@@ -19,6 +20,7 @@ class Order extends Model
 
     protected $appends = [
         'total_amount',
+        'order_type',
     ];
 
     public function scopeFieldsForMasterList($query)
@@ -42,5 +44,18 @@ class Order extends Model
             return $this->line->sum('amount');
         }
         return 0;
+    }
+
+    public function getOrderTypeAttribute()
+    {
+        return $this->customer_id ? 'IN_HOUSE' : 'WALK_IN';
+    }
+
+    public function scopeWithCustomerName($query, $name)
+    {
+        return $query->whereHas('customer', function ($q) use ($name) {
+            $q->whereRaw("CONCAT(firstname, ' ', lastname) LIKE '%{$name}%'");
+        })
+            ->orWhere('customer_name', 'LIKE', "'%{$name}%'");
     }
 }

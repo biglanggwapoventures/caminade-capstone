@@ -28,6 +28,9 @@
   </div>
   <button type="submit" class="btn btn-danger ml-2">Filter</button>
 {!! Form::close() !!}
+@if(session('SMS'))
+<div class="alert alert-{{ session('SMS')['result'] }} p-2 mb-2">{{ session('SMS')['message'] }}</div>
+@endif
 <table class="table table-striped">
     <thead class="thead-dark">
         <tr>
@@ -64,6 +67,9 @@
                 </td>
                 <td>
                     @include('components.form.index-actions', ['id' => $row->id, 'hideRemove' => true])
+                    @if(auth()->user()->is('admin'))
+                        <button type="button" class="btn btn-success" data-target="#send-sms" data-toggle="modal" data-pk="{{ $row->id }}">SMS</button>
+                    @endif
                 </td>
             </tr>
         @empty
@@ -74,3 +80,47 @@
     </tbody>
 </table>
 @endsection
+
+
+@push('modals')
+<div class="modal fade" id="send-sms" tabindex="-1" role="dialog" aria-labelledby="sms-title" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="sms-title">Send SMS</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {!! Form::open(['url' => route('admin.appointment.send-sms'), 'method' => 'POST','class' => 'ajax']) !!}
+                <div class="modal-body">
+                    {!! Form::hidden('id', null) !!}
+                    {!!
+                        Form::bsSelect('action', 'SMS Action', [
+                            '' => '',
+                            'update' => 'Send follow up on today\'s appointment',
+                            'approve' => 'Send rejection notification',
+                            'reject' => 'Send approval notification',
+                        ])
+                    !!}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Send</button>
+                </div>
+            {!! Form::close() !!}
+        </div>
+    </div>
+</div>
+@endpush
+
+@push('scripts')
+    <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            $('#send-sms').on('show.bs.modal', function (e){
+                var btn = $(e.relatedTarget);
+                $(this).find('[name=id]').val(btn.data('pk'));
+            })
+        });
+    </script>
+@endpush

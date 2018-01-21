@@ -8,6 +8,7 @@ use App\AppointmentLine;
 use App\AppointmentProduct;
 use App\Http\Controllers\Common\CRUDController;
 use App\Pet;
+use App\PetLog;
 use App\Product;
 use App\Rules\CustomerRole;
 use App\Rules\DoctorRole;
@@ -32,7 +33,8 @@ class AppointmentController extends CRUDController
         Product $product,
         AppointmentLine $line,
         AppointmentProduct $usedProduct,
-        AppointmentFinding $finding
+        AppointmentFinding $finding,
+        PetLog $petLog
     ) {
         parent::__construct();
         $this->resourceModel = $model;
@@ -51,9 +53,13 @@ class AppointmentController extends CRUDController
                 'child.*.service_id' => ['required', Rule::exists($service->getTable(), $service->getKeyName())],
                 'products.*.product_id' => ['nullable', 'required_with:products.*.quantity', Rule::exists($product->getTable(), $pet->getKeyName())],
                 'products.*.quantity' => ['nullable', 'required_with:products.*.product_id', 'numeric'],
-
                 'findings.*.pet_id' => ['nullable', 'distinct', 'required_with:findings.*.findings', Rule::exists($pet->getTable(), $pet->getKeyName())],
                 'findings.*.findings' => ['nullable', 'required_with:products.*.pet_id'],
+
+                'pet_logs.*.pet_id' => ['nullable', 'required_with:pet_logs.*.log_date,pet_logs.*.log_time,pet_logs.*.remarks', Rule::exists($pet->getTable(), $pet->getKeyName())],
+                'pet_logs.*.log_date' => ['nullable', 'required_with:pet_logs.*.pet_id,pet_logs.*.log_time,pet_logs.*.remarks', 'date'],
+                'pet_logs.*.log_time' => ['nullable', 'required_with:pet_logs.*.pet_id,pet_logs.*.log_date,pet_logs.*.remarks', 'date_format:H:i'],
+                'pet_logs.*.remarks' => ['nullable', 'required_with:pet_logs.*.pet_id,pet_logs.*.log_date,pet_logs.*.log_time'],
             ],
             'update' => [
                 'parent.appointment_date' => 'required|date_format:Y-m-d',
@@ -73,12 +79,19 @@ class AppointmentController extends CRUDController
                 'findings.*.id' => ['sometimes', Rule::exists($finding->getTable())],
                 'findings.*.pet_id' => ['nullable', 'distinct', 'required_with:findings.*.findings', Rule::exists($pet->getTable(), $pet->getKeyName())],
                 'findings.*.findings' => ['nullable', 'required_with:products.*.pet_id'],
+                'pet_logs.*.id' => ['sometimes', Rule::exists($petLog->getTable(), $petLog->getKeyName())],
+                'pet_logs.*.pet_id' => ['nullable', 'required_with:pet_logs.*.log_date,pet_logs.*.log_time,pet_logs.*.remarks', Rule::exists($pet->getTable(), $pet->getKeyName())],
+                'pet_logs.*.log_date' => ['nullable', 'required_with:pet_logs.*.pet_id,pet_logs.*.log_time,pet_logs.*.remarks', 'date'],
+                'pet_logs.*.log_time' => ['nullable', 'required_with:pet_logs.*.pet_id,pet_logs.*.log_date,pet_logs.*.remarks', 'date_format:H:i'],
+                'pet_logs.*.remarks' => ['nullable', 'required_with:pet_logs.*.pet_id,pet_logs.*.log_date,pet_logs.*.log_time'],
             ],
         ];
     }
 
     public function beforeIndex($query)
     {
+        // session()->flash('SMS', ['result' => 'success', 'message' => 'SMS has been sent succesfully!']);
+
         collect($this->filterFields)->each(function ($value, $key) use ($query) {
             if ($filter = request()->{$key}) {
                 list($column, $operand) = $value;
@@ -105,6 +118,7 @@ class AppointmentController extends CRUDController
     {
         $this->createRelations($model, 'products', 'usedProducts');
         $this->createRelations($model, 'findings', 'findings');
+        $this->createRelations($model, 'pet_logs', 'petLogs');
         $model->usedProducts->each->saveProductLog();
     }
 
@@ -112,6 +126,8 @@ class AppointmentController extends CRUDController
     {
         $this->updateParentRelations($model, 'products', 'usedProducts');
         $this->updateParentRelations($model, 'findings', 'findings');
+        $this->updateParentRelations($model, 'pet_logs', 'petLogs');
+
         $model->usedProducts->each->saveProductLog();
     }
 
@@ -138,7 +154,7 @@ class AppointmentController extends CRUDController
     {
         $this->beforeCreate();
 
-        $model->load(['line.service', 'usedProducts.product', 'findings']);
+        $model->load(['line.service', 'usedProducts.product', 'findings', 'petLogs']);
         $this->viewData['customerPets'] = Pet::with('breed')->ownedBy($model->customer_id)->get()
             ->mapWithKeys(function ($item) {
                 return [$item->id => "{$item->name} ({$item->breed->description})"];

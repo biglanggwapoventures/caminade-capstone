@@ -11,6 +11,12 @@ use Illuminate\Validation\Rule;
 
 class OrderController extends CRUDController
 {
+
+    protected $filterFields = [
+        'from' => ['order_date', '>='],
+        'to' => ['order_date', '<='],
+    ];
+
     public function __construct(Order $model, Product $product, OrderLine $line, User $customer)
     {
         parent::__construct();
@@ -18,8 +24,9 @@ class OrderController extends CRUDController
         $this->relatedModel = 'line';
         $this->validationRules = [
             'store' => [
-                'parent.customer_id' => ['required', Rule::exists($customer->getTable(), $customer->getKeyName())],
-                'parent.order_date' => ['required', 'date'],
+                'order_type' => ['required', Rule::in('WALK_IN', 'IN_HOUSE')],
+                'parent.customer_id' => ['nullable', 'required_if:order_type,IN_HOUSE', Rule::exists($customer->getTable(), $customer->getKeyName())],
+                'parent.customer_name' => 'required_if:order_type,WALK_IN',
                 'parent.remarks' => ['present', 'nullable'],
                 'child.*.product_id' => ['required', 'distinct', Rule::exists($product->getTable(), $product->getKeyName())],
                 'child.*.stock' => ['required', 'numeric'],
@@ -28,8 +35,9 @@ class OrderController extends CRUDController
                 'child.*.discount' => ['nullable', 'numeric'],
             ],
             'update' => [
-                'parent.customer_id' => ['required', Rule::exists($customer->getTable(), $customer->getKeyName())],
-                'parent.order_date' => ['required', 'date'],
+                'order_type' => ['required', Rule::in('WALK_IN', 'IN_HOUSE')],
+                'parent.customer_id' => ['nullable', 'required_if:order_type,IN_HOUSE', Rule::exists($customer->getTable(), $customer->getKeyName())],
+                'parent.customer_name' => 'required_if:order_type,WALK_IN',
                 'parent.remarks' => ['present', 'nullable'],
                 'child.*.id' => ['sometimes', Rule::exists($line->getTable(), $line->getKeyName())],
                 'child.*.product_id' => ['required', 'distinct', Rule::exists($product->getTable(), $product->getKeyName())],
@@ -43,6 +51,15 @@ class OrderController extends CRUDController
 
     public function beforeIndex($query)
     {
+        collect($this->filterFields)->each(function ($value, $key) use ($query) {
+            if ($filter = request()->{$key}) {
+                list($column, $operand) = $value;
+                $query->where($column, $operand, $filter);
+            }
+        });
+        if ($name = request()->customer_name) {
+            $query->withCustomerName($name);
+        }
         $this->viewData['customerList'] = User::customerList()->prepend('', '');
     }
 
@@ -58,6 +75,25 @@ class OrderController extends CRUDController
     public function beforeEdit($model)
     {
         $this->beforeCreate();
+    }
+
+    public function beforeStore()
+    {
+        $this->validatedInput['parent']['order_date'] = date('Y-m-d');
+        if ($this->validatedInput['order_type'] === 'WALK_IN') {
+            $this->validatedInput['parent']['customer_id'] = null;
+        } else {
+            $this->validatedInput['parent']['customer_name'] = null;
+        }
+    }
+
+    public function beforeUpdate()
+    {
+        if ($this->validatedInput['order_type'] === 'WALK_IN') {
+            $this->validatedInput['parent']['customer_id'] = null;
+        } else {
+            $this->validatedInput['parent']['customer_name'] = null;
+        }
     }
 
     public function afterStore($order)
