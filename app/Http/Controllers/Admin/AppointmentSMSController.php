@@ -29,8 +29,12 @@ class AppointmentSMSController extends Controller
                 $result = $appointment->sendUpdateSMS();
                 break;
 
-            default:
-                # code...
+            case 'reject':
+                $result = $appointment->sendRejectionSMS();
+                break;
+
+            case 'approve':
+                $result = $appointment->sendApprovalSMS();
                 break;
         }
 

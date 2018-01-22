@@ -8,6 +8,7 @@ use App\AppointmentProduct;
 use App\Facades\SMS;
 use App\PetLog;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Appointment extends Model
@@ -21,6 +22,10 @@ class Appointment extends Model
         'appointment_status',
         'status_remarks',
         'completed_at',
+    ];
+
+    protected $appends = [
+        'appointment_timestamp',
     ];
 
     public function calculateApproximateFinishTime()
@@ -159,21 +164,28 @@ class Appointment extends Model
 
     public function sendApprovalSMS()
     {
-
+        $timestamp = $this->appointment_timestamp->format('m/d/y h:i A');
+        $message = new SMS($this->customer->contact_number, "PetCare: Your appointment on {$timestamp} has been APPROVED! Please be guided. Thank you!");
+        return $message->send();
     }
 
     public function sendRejectionSMS()
     {
-
+        $timestamp = $this->appointment_timestamp->format('m/d/y h:i A');
+        $message = new SMS($this->customer->contact_number, "PetCare: Your appointment on {$timestamp} has been REJECTED! Please be guided. Thank you!");
+        return $message->send();
     }
 
     public function sendUpdateSMS()
     {
         $appointmentTime = date_create_from_format('H:i', $this->appointment_time)->format('h:i a');
-
         $message = new SMS($this->customer->contact_number, "PetCare: You have an appointment today @ {$appointmentTime}. Please be guided. Thank you!");
-
         return $message->send();
+    }
+
+    public function getAppointmentTimestampAttribute()
+    {
+        return Carbon::createFromFormat('Y-m-d H:i', "{$this->appointment_date} {$this->appointment_time}", 'Asia/Manila');
     }
 
 }

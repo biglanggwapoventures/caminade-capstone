@@ -10,6 +10,17 @@
         <a class="btn btn-info" href="{{ MyHelper::resource('create') }}">Create new pet</a>
     </div>
 </div>
+{!! Form::open(['url' => route('admin.pet.index'), 'method' => 'GET', 'class' => 'form-inline mb-2 mt-2']) !!}
+  <div class="form-group">
+    <label for="inputPassword2">Customer</label>
+    {!! Form::select('customer_id', $customerList, null, ['class' => 'custom-select ml-1', '']) !!}
+  </div>
+  <div class="form-group">
+    <label for="inputPassword2" class="ml-1">Pet Name</label>
+    {!! Form::text('pet_name', null, ['class' => 'form-control ml-1', '']) !!}
+  </div>
+  <button type="submit" class="btn btn-danger ml-2">Filter</button>
+{!! Form::close() !!}
 <table class="table table-striped mt-3">
     <thead class="thead-dark">
         <tr>
@@ -32,9 +43,10 @@
             <td>{{ $row->breed->description }}</td>
             <td>{{ $row->gender }}</td>
             <td>{{ $row->reproductiveAlteration->description }}</td>
-            <td>{{ date_create($row->birthdate)->format('F d, Y') }}</td>
+            <td>{{ date_create($row->birthdate)->format('m/d/Y') }}</td>
             <td>
-                @include('components.form.index-actions', ['id' => $row->id])
+                @includeWhen(auth()->user()->is('admin'), 'components.form.index-actions', ['id' => $row->id])
+                <a href="{{ route('admin.pet.show', ['id' => $row->id]) }}" class="btn btn-info">View</a>
             </td>
         </tr>
         @empty

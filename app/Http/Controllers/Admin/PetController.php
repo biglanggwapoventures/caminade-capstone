@@ -49,6 +49,15 @@ class PetController extends CRUDController
 
     public function beforeIndex($query)
     {
+        $query->when(($customer = request()->customer_id), function ($query) use ($customer) {
+            return $query->ownedBy($customer);
+        });
+
+        $query->when(($name = trim(request()->pet_name)), function ($query) use ($name) {
+            return $query->where('name', 'like', "%{$name}%");
+        });
+
+        $this->viewData['customerList'] = User::customerList()->prepend('** ALL CUSTOMER **', '');
         $query->with('owner');
     }
 

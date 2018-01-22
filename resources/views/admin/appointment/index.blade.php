@@ -99,8 +99,8 @@
                         Form::bsSelect('action', 'SMS Action', [
                             '' => '',
                             'update' => 'Send follow up on today\'s appointment',
-                            'approve' => 'Send rejection notification',
-                            'reject' => 'Send approval notification',
+                            'approve' => 'Send approval notification',
+                            'reject' => 'Send rejection notification',
                         ])
                     !!}
                 </div>
