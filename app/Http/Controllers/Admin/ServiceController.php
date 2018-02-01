@@ -9,6 +9,11 @@ use Illuminate\Validation\Rule;
 
 class ServiceController extends CRUDController
 {
+    protected $filterFields = [
+        'name' => ['name', 'like', '%_%'],
+        'status' => ['service_status', '='],
+    ];
+
     public function __construct(Service $model, Request $request)
     {
         $this->middleware('role:admin', ['except' => ['index']]);
@@ -30,6 +35,17 @@ class ServiceController extends CRUDController
                 'service_status' => ['required', Rule::in(['active', 'inactive'])],
             ],
         ];
+    }
+
+    public function beforeIndex($query)
+    {
+        collect($this->filterFields)->each(function ($value, $key) use ($query) {
+            if ($filter = request()->{$key}) {
+                list($column, $operand) = $value;
+                $filter = isset($value[2]) ? str_replace('_', $filter, $value[2]) : $filter;
+                $query->where($column, $operand, $filter);
+            }
+        });
     }
 
 }

@@ -107,7 +107,7 @@ class CRUDController extends Controller
 
         $query->fieldsForMasterList();
 
-        $this->viewData['resourceList'] = $query->get();
+        $this->viewData['resourceList'] = $this->afterIndex($query->get());
 
         return view(
             "{$this->viewBaseDir}.{$this->viewFiles['index']}",
@@ -391,6 +391,11 @@ class CRUDController extends Controller
     public function beforeIndex($query)
     {
 
+    }
+
+    public function afterIndex($collection)
+    {
+        return $collection;
     }
 
     public function beforeShow($model)

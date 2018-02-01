@@ -377,6 +377,14 @@
          $('#service-table').on('table:changed', function () {
             $(this).find('#service-total').text(getServiceTotal().toFixed(2))
         }).trigger('table:changed');
+
+         $('[name="parent[appointment_status]"]').change(function(e) {
+             if($(this).val() === 'DENIED'){
+                $('[name="parent[status_remarks]"]').closest('.form-group').removeClass('d-none');
+             }else{
+                $('[name="parent[status_remarks]"]').closest('.form-group').addClass('d-none');
+             }
+         }).trigger('change');
     });
 </script>
 @endpush

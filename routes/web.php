@@ -39,8 +39,8 @@ Route::group(['prefix' => 'management', 'namespace' => 'Admin', 'as' => 'admin.'
         Route::resource('appointment', 'AppointmentController');
         Route::resource('order', 'OrderController');
 
-        Route::get('{product}/logs', 'ProductLogController@index')->name('product.logs');
-        Route::post('{product}/logs', 'ProductLogController@adjust')->name('product.logs.adjust');
+        Route::get('product/{product}/logs', 'ProductLogController@index')->name('product.logs');
+        Route::post('product/{product}/logs', 'ProductLogController@adjust')->name('product.logs.adjust');
 
         Route::post('appointment/send-sms', 'AppointmentSMSController')->name('appointment.send-sms');
     });
@@ -59,6 +59,7 @@ Route::group(['prefix' => 'user', 'namespace' => 'User', 'as' => 'user.', 'middl
     Route::resource('pet', 'PetController');
     Route::resource('appointment', 'AppointmentController');
     Route::post('appointment/{appointmentId}/cancel', 'CancelAppointmentController')->name('appointment.cancel');
+    Route::get('order-history', 'ViewOrderHistoryController')->name('order-history.show');
 });
 
 Route::group(['prefix' => 'doctor', 'namespace' => 'Doctor', 'as' => 'doctor.', 'middleware' => 'auth'], function () {

@@ -5,10 +5,36 @@
     <div class="col">
         <h2>Products</h2>
     </div>
+    @if(auth()->user()->is('admin'))
     <div class="col text-right">
         <a class="btn btn-info" href="{{ MyHelper::resource('create') }}">Create new product</a>
     </div>
+    @endif
 </div>
+{!! Form::open(['url' => MyHelper::resource('index'), 'method' => 'GET', 'class' => 'form-inline mb-2 mt-2']) !!}
+
+    <div class="form-group">
+        <label class="mr-1">Name</label>
+        {!! Form::text('name', null, ['class' => 'form-control']) !!}
+    </div>
+    <div class="form-group">
+        <label class="ml-1">Category</label>
+        {!! Form::select('category', $categories, null, ['class' => 'custom-select ml-1']) !!}
+    </div>
+    <div class="form-group">
+        <label class="ml-1">Supplier</label>
+        {!! Form::select('supplier', $suppliers, null, ['class' => 'custom-select ml-1']) !!}
+    </div>
+    <div class="form-group">
+        <label class="ml-1">Status</label>
+        {!! Form::select('status', ['' => '** ALL **',  'active' => 'Active', 'inactive' => 'Inactive'], null, ['class' => 'custom-select ml-1']) !!}
+    </div>
+    <div class="form-group">
+        <label class="ml-1">Sort by</label>
+        {!! Form::select('sort_by', ['' => 'None',  'stock_desc' => 'Stock High to Low', 'stock_asc' => 'Stock Low to High'], null, ['class' => 'custom-select ml-1']) !!}
+    </div>
+  <button type="submit" class="btn btn-danger ml-2">Search</button>
+{!! Form::close() !!}
 <table class="table table-striped mt-3">
     <thead class="thead-dark">
         <tr>
@@ -44,7 +70,6 @@
             </td>
             <td>
                 {{ $row->reorder_level }}
-
             </td>
             <td>
                 @if($row->product_status === 'inactive')

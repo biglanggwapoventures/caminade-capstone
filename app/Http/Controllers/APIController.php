@@ -27,7 +27,7 @@ class APIController extends Controller
                 'line.service',
                 'line.pet.breed',
             ])
-            ->get(['id', 'appointment_date', 'appointment_time', 'customer_id']);
+            ->get(['id', 'appointment_date', 'appointment_time', 'customer_id', 'remarks']);
 
         $data->each->calculateApproximateFinishTime();
 

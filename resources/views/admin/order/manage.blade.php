@@ -61,7 +61,7 @@
                         <tr>
                             <td>
                                 {!! Form::bsSelect("child[{$loop->index}][product_id]", null, $productList, $row->product_id, ['class' => 'product custom-select  w-100', 'data-name' => 'child[idx][product_id]']) !!}
-                                {!! Form::hidden("child[{$loop->index}][id]", $row->id) !!}
+                                {!! Form::hidden("child[{$loop->index}][id]", $row->id, ['class' => 'purge']) !!}
                             </td>
                             <td>
                                 {!! Form::bsText("child[{$loop->index}][quantity]", null, $row->quantity, ['data-name' => 'child[idx][quantity]', 'class' => 'form-control quantity']) !!}
@@ -78,7 +78,7 @@
 
                         @empty
                         <tr>
-                            <td>{!! Form::bsSelect('child[0][product_id]', null, $productList, null, ['class' => 'product custom-select  w-100', 'data-name' => 'products[idx][product_id]']) !!}</td>
+                            <td>{!! Form::bsSelect('child[0][product_id]', null, $productList, null, ['class' => 'product custom-select  w-100', 'data-name' => 'child[idx][product_id]']) !!}</td>
                             <td>
                                 {!! Form::bsText('child[0][quantity]', null, null, ['data-name' => 'child[idx][quantity]', 'class' => 'form-control quantity']) !!}
                                 {!! Form::hidden('child[0][stock]', null, ['data-name' => 'child[idx][stock]', 'class' => 'stock ignore']) !!}
@@ -170,14 +170,14 @@
         $('.add-line').click(function() {
             var table = $(this).closest('table.dynamic'),
                 clone = table.find('tbody tr:first').clone();
-            clone.find('select,input:not([type=hidden])')
+            clone.find('select,input:not(.purge)')
                 .attr('name', function () {
                     return $(this).data('name').replace('idx', table.find('tbody tr').length)
                 })
                 .val('');
 
             clone.find('.clear').html('')
-            clone.find('[type=hidden]').remove('')
+            clone.find('input[type=hidden].purge').remove('')
             clone.appendTo(table.find('tbody'))
         })
 

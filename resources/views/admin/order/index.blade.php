@@ -22,7 +22,7 @@
     <label for="inputPassword2" class="ml-1">To</label>
     {!! Form::date('to', null, ['class' => 'form-control ml-1', '']) !!}
   </div>
-  <button type="submit" class="btn btn-danger ml-2">Filter</button>
+  <button type="submit" class="btn btn-danger ml-2">Search</button>
 {!! Form::close() !!}
 <table class="table table-striped">
     <thead class="thead-dark">

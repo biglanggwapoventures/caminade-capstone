@@ -2,13 +2,16 @@
 
 
 @section('body')
-<div class="row mt-4">
+<div class="row mt-4 align-items-center">
     <div class="col">
         <h2>{{ $product->name }} Logs</h2>
     </div>
+    <div class="col text-right">
+        <a href="{{ route('admin.product.index') }}" class="btn btn-info">Back to list</a>
+    </div>
 </div>
 <div class="row">
-    <div class="col-sm-6">
+    <div class="col-sm-8 offset-sm-2">
         {!! Form::open(['url' => route('admin.product.logs.adjust', ['product' => $product->id]), 'class' => 'form-inline']) !!}
             <div class="form-group">
                 <label class="control-label">Adjust Quantity</label>

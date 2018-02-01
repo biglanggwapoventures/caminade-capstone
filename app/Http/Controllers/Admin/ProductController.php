@@ -11,6 +11,13 @@ use Illuminate\Validation\Rule;
 
 class ProductController extends CRUDController
 {
+    protected $filterFields = [
+        'name' => ['name', 'like', '%_%'],
+        'category' => ['product_category_id', '='],
+        'supplier' => ['supplier_id', '='],
+        'status' => ['product_status', '='],
+    ];
+
     public function __construct(Product $model, Request $request, ProductCategory $category, Supplier $supplier)
     {
         $this->middleware('role:admin', ['except' => ['index']]);
@@ -43,10 +50,36 @@ class ProductController extends CRUDController
         ];
     }
 
+    public function beforeIndex($query)
+    {
+        $this->viewData['suppliers'] = Supplier::dropdownFormat();
+        $this->viewData['categories'] = ProductCategory::dropdownFormat();
+
+        collect($this->filterFields)->each(function ($value, $key) use ($query) {
+            if ($filter = request()->{$key}) {
+                list($column, $operand) = $value;
+                $filter = isset($value[2]) ? str_replace('_', $filter, $value[2]) : $filter;
+                $query->where($column, $operand, $filter);
+            }
+        });
+    }
+
+    public function afterIndex($collection)
+    {
+        switch (request()->sort_by) {
+            case 'stock_desc':
+                return $collection->sortByDesc('stock_on_hand');
+            case 'stock_asc':
+                return $collection->sortBy('stock_on_hand');
+            default:
+                return $collection;
+        }
+    }
+
     public function beforeCreate()
     {
-        $this->viewData['categories'] = ProductCategory::select('id', 'description')->orderBy('description')->pluck('description', 'id')->prepend('', '');
-        $this->viewData['suppliers'] = Supplier::select('id', 'description')->orderBy('description')->pluck('description', 'id')->prepend('', '');
+        $this->viewData['suppliers'] = Supplier::dropdownFormat();
+        $this->viewData['categories'] = ProductCategory::dropdownFormat();
     }
 
     public function beforeEdit($model)
@@ -71,7 +104,7 @@ class ProductController extends CRUDController
         }
     }
 
-    public function afteStore($product)
+    public function afterStore($product)
     {
         $product->setBeginningBalance();
     }

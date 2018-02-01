@@ -20,4 +20,9 @@ class ProductCategory extends Model
     {
         return $query;
     }
+
+    public function scopeDropdownFormat($query)
+    {
+        return $query->orderBy('description')->pluck('description', 'id')->prepend('** ALL **', '');
+    }
 }

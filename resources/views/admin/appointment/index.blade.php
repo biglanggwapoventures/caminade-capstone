@@ -26,7 +26,7 @@
     <label for="inputPassword2" class="ml-1">Status</label>
     {!! Form::select('status', ['' => '** ALL **', 'PENDING' => 'Pending', 'APPROVED' => 'Approved', 'DENIED' => 'Rejected'], null, ['class' => 'custom-select ml-1', '']) !!}
   </div>
-  <button type="submit" class="btn btn-danger ml-2">Filter</button>
+  <button type="submit" class="btn btn-danger ml-2">Search</button>
 {!! Form::close() !!}
 @if(session('SMS'))
 <div class="alert alert-{{ session('SMS')['result'] }} p-2 mb-2">{{ session('SMS')['message'] }}</div>
@@ -67,9 +67,7 @@
                 </td>
                 <td>
                     @include('components.form.index-actions', ['id' => $row->id, 'hideRemove' => true])
-                    @if(auth()->user()->is('admin'))
-                        <button type="button" class="btn btn-success" data-target="#send-sms" data-toggle="modal" data-pk="{{ $row->id }}">SMS</button>
-                    @endif
+                    <button type="button" class="btn btn-success" data-target="#send-sms" data-toggle="modal" data-pk="{{ $row->id }}">SMS</button>
                 </td>
             </tr>
         @empty
@@ -118,6 +116,7 @@
     <script type="text/javascript">
         jQuery(document).ready(function($) {
             $('#send-sms').on('show.bs.modal', function (e){
+                console.log(e)
                 var btn = $(e.relatedTarget);
                 $(this).find('[name=id]').val(btn.data('pk'));
             })

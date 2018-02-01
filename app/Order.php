@@ -58,4 +58,9 @@ class Order extends Model
         })
             ->orWhere('customer_name', 'LIKE', "'%{$name}%'");
     }
+
+    public function scopeWithDetails($query)
+    {
+        return $query->with('line.product');
+    }
 }

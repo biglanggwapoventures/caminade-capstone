@@ -3,6 +3,8 @@
 namespace App;
 
 use App\Appointment;
+use App\DoctorProfile;
+use App\Order;
 use App\Pet;
 use Hash;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -103,6 +105,16 @@ class User extends Authenticatable
         return $query->whereRole(strtoupper($role));
     }
 
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'customer_id');
+    }
+
+    public function ordersWithDetails()
+    {
+        return $this->orders()->with('line.product')->orderBy('id', 'desc');
+    }
+
     public static function customerList()
     {
         return self::ofRole('customer')
@@ -139,5 +151,10 @@ class User extends Authenticatable
     public function blocked()
     {
         return $this->belongsTo(get_class($this), 'blocked_by');
+    }
+
+    public function doctorProfile()
+    {
+        return $this->hasOne(DoctorProfile::class, 'doctor_id');
     }
 }

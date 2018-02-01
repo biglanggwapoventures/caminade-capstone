@@ -49,7 +49,8 @@
                         <a class="dropdown-item" href="{{ route('admin.appointment.index') }}">Admin Page</a>
                         @elseif(Auth::user()->is('doctor'))
                         <a class="dropdown-item" href="{{ route('doctor.appointment.index') }}">Admin Page</a>
-
+                        @elseif(Auth::user()->is('customer'))
+                        <a class="dropdown-item" href="{{ route('user.order-history.show') }}">Order History</a>
                         @endif
                         <a class="dropdown-item" data-toggle="modal" data-target="#profile" href="javascript:void()">Profile</a>
 
@@ -110,7 +111,7 @@
                     {!! Form::bsPassword('password', 'Desired Password', ['class' => 'form-control form-control-sm']) !!}
                 </div>
                 <div class="col">
-                    {!! Form::bsPassword('password_confirmation', 'Password, Again', ['class' => 'form-control form-control-sm']) !!}
+                    {!! Form::bsPassword('password_confirmation', 'Confirm Password', ['class' => 'form-control form-control-sm']) !!}
                 </div>
             </div>
           </div>

@@ -1,14 +1,14 @@
 @extends('admin.layouts.main')
-
-
 @section('body')
 <div class="row mt-4">
     <div class="col">
         <h2>Pets</h2>
     </div>
+    @if(auth()->user()->is(['admin', 'staff']))
     <div class="col text-right">
         <a class="btn btn-info" href="{{ MyHelper::resource('create') }}">Create new pet</a>
     </div>
+    @endif
 </div>
 {!! Form::open(['url' => route('admin.pet.index'), 'method' => 'GET', 'class' => 'form-inline mb-2 mt-2']) !!}
   <div class="form-group">
@@ -19,7 +19,7 @@
     <label for="inputPassword2" class="ml-1">Pet Name</label>
     {!! Form::text('pet_name', null, ['class' => 'form-control ml-1', '']) !!}
   </div>
-  <button type="submit" class="btn btn-danger ml-2">Filter</button>
+  <button type="submit" class="btn btn-danger ml-2">Search</button>
 {!! Form::close() !!}
 <table class="table table-striped mt-3">
     <thead class="thead-dark">

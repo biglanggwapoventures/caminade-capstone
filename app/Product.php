@@ -31,6 +31,7 @@ class Product extends Model
     protected $appends = [
         'photo_src',
         'stock_on_hand',
+        'high_stock',
     ];
 
     public function supplier()
@@ -48,6 +49,16 @@ class Product extends Model
         return $query->with(['supplier', 'category', 'logs'])->orderBy('product_status')->orderBy('name');
     }
 
+    public function scopeForShowcase($query)
+    {
+        return $query->active()->with(['category', 'logs'])->orderBy('name');
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->whereProductStatus('active');
+    }
+
     public function getPhotoSrcAttribute()
     {
         return asset("storage/{$this->photo_path}");
@@ -63,13 +74,13 @@ class Product extends Model
         return $this->morphOne(ProductLog::class, 'log', 'causer', 'causer_id');
     }
 
-    public function setBeginningBalance($quantity = null)
+    public function setBeginningBalance()
     {
         $log = $this->beginningBalanceLog()->firstOrNew([
-            'quantity' => $quantity ?: $this->stock,
             'product_id' => $this->id,
             'remarks' => 'Beginning Balance',
         ]);
+        $log->quantity = $this->stock;
         $log->save();
         return $log;
     }
@@ -79,7 +90,7 @@ class Product extends Model
         $this->logs()->create([
             'causer' => get_class($this),
             'causer_id' => $this->id,
-            'remarks' => 'Stock Adjustment @' . now()->format('m/d/Y h:i A'),
+            'remarks' => 'Stock Adjustment @ ' . now()->format('m/d/Y h:i A'),
             'quantity' => $quantity,
         ]);
     }
@@ -90,5 +101,10 @@ class Product extends Model
             return $this->logs->sum('quantity');
         }
         return 0;
+    }
+
+    public function getHighStockAttribute()
+    {
+        return $this->stock_on_hand > $this->reorder_level;
     }
 }

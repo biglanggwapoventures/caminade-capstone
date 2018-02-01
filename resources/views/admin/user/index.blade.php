@@ -27,7 +27,7 @@
     <label for="inputPassword2" class="ml-1">Status</label>
     {!! Form::select('status', ['' => '** ALL **', 'blocked' => 'Blocked Only', 'unblocked' => 'Unblocked Only'], null, ['class' => 'custom-select ml-1', '']) !!}
   </div>
-  <button type="submit" class="btn btn-danger ml-2">Filter</button>
+  <button type="submit" class="btn btn-danger ml-2">Search</button>
 {!! Form::close() !!}
 <table class="table table-striped mt-3">
     <thead class="thead-dark">
