@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Common\CRUDController;
 use App\PetCategory;
 use Illuminate\Validation\Rule;
+use Toast;
 
 class PetCategoryController extends CRUDController
 {
@@ -20,5 +21,15 @@ class PetCategoryController extends CRUDController
                 'description' => ['required', Rule::unique($model->getTable())->ignore(request()->route('pet_category'))],
             ],
         ];
+    }
+
+    public function afterStore($category)
+    {
+        Toast::success('New pet category has been added!');
+    }
+
+    public function afterUpdate($category)
+    {
+        Toast::success('Pet category has been successfully updated!');
     }
 }

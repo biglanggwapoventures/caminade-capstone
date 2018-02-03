@@ -15,6 +15,7 @@ use App\Rules\DoctorRole;
 use App\Service;
 use App\User;
 use Illuminate\Validation\Rule;
+use Toast;
 
 class AppointmentController extends CRUDController
 {
@@ -120,6 +121,7 @@ class AppointmentController extends CRUDController
         $this->createRelations($model, 'findings', 'findings');
         $this->createRelations($model, 'pet_logs', 'petLogs');
         $model->usedProducts->each->saveProductLog();
+        Toast::success('New appointment has been added!');
     }
 
     public function afterUpdate($model)
@@ -127,8 +129,8 @@ class AppointmentController extends CRUDController
         $this->updateParentRelations($model, 'products', 'usedProducts');
         $this->updateParentRelations($model, 'findings', 'findings');
         $this->updateParentRelations($model, 'pet_logs', 'petLogs');
-
         $model->usedProducts->each->saveProductLog();
+        Toast::success('Appointment has been successfully updated!');
     }
 
     public function beforeCreate()

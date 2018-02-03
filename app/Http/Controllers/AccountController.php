@@ -6,6 +6,7 @@ use App\User;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Toast;
 use Validator;
 
 class AccountController extends Controller
@@ -33,6 +34,8 @@ class AccountController extends Controller
         $user = $this->model->create($input);
         Auth::login($user);
 
+        Toast::success("Welcome to PetCare, {$user->fullname}!");
+
         return response()->json([
             'result' => true,
             'next_url' => route('home'),
@@ -51,6 +54,7 @@ class AccountController extends Controller
         if ($validator->passes()) {
             $credentials = $request->all(['username', 'password']);
             if (Auth::attempt($credentials)) {
+                Toast::success("Welcome back, " . Auth::user()->fullname . " !");
                 if (Auth::user()->is_blocked) {
                     $validator->errors()->add('username', 'This account has been blocked!');
                     Auth::logout();
@@ -74,6 +78,7 @@ class AccountController extends Controller
     public function logout()
     {
         Auth::logout();
+        Toast::success("You have been successfully logged out!");
         return redirect()->route('home');
     }
 
@@ -107,6 +112,7 @@ class AccountController extends Controller
         }
 
         Auth::user()->fill($input)->save();
+        Toast::success("Your profile been successfully updated!");
 
         return response()->json([
             'result' => true,

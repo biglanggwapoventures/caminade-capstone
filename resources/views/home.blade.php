@@ -18,20 +18,22 @@
           <div class="carousel-item active">
             <img class="first-slide" src="{{ asset('images/sign-up.jpg') }}" alt="Sign up now!">
             <div class="container">
-              <div class="carousel-caption text-left">
-                <h1>Example headline.</h1>
-                <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-                <p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>
+              <div class="carousel-caption">
+                <h1>Make your appointment easier!</h1>
+                <p>Register an account to book an appointment online with our doctors..</p>
+                @guest
+                <p><a class="btn btn-lg btn-primary" data-toggle="modal" data-target="#register" role="button">Sign Up Today</a></p>
+                @endguest
               </div>
             </div>
           </div>
           <div class="carousel-item">
             <img class="second-slide" src="{{ asset('images/our-products.jpg') }}" alt="Our products">
             <div class="container">
-              <div class="carousel-caption">
-                <h1>Another example headline.</h1>
-                <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-                <p><a class="btn btn-lg btn-primary" href="#" role="button">Learn more</a></p>
+              <div class="carousel-caption text-left">
+                <h1>Keep your pets healthy and happy!</h1>
+                <p>We provide a wide variety of good quality products for you to maintain your pet's health.</p>
+                <p><a class="btn btn-lg btn-primary" href="{{ route('product-showcase') }}" role="button">View products</a></p>
               </div>
             </div>
           </div>
@@ -39,9 +41,9 @@
             <img class="third-slide" src="{{ asset('images/our-services.jpg') }}" alt="Our services">
             <div class="container">
               <div class="carousel-caption text-right">
-                <h1>One more for good measure.</h1>
-                <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-                <p><a class="btn btn-lg btn-primary" href="#" role="button">Browse gallery</a></p>
+                <h1>Check out what can we offer for your pets!</h1>
+                <p>We provide a dozens of services to keep your pet healthy and happy.</p>
+                <p><a class="btn btn-lg btn-primary" href="{{ route('service-showcase') }}" role="button">View services</a></p>
               </div>
             </div>
           </div>

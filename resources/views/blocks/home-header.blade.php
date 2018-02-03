@@ -12,6 +12,9 @@
                 <li>
                     <a href="{{ route('product-showcase') }}" class="nav-link">Our Products</a>
                 </li>
+                <li>
+                    <a href="{{ route('doctor-showcase') }}" class="nav-link">Our Doctors</a>
+                </li>
             </ul>
             @guest
             <ul class="navbar-nav ml-auto">
@@ -47,13 +50,14 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         @if(Auth::user()->is(['admin', 'staff']))
                         <a class="dropdown-item" href="{{ route('admin.appointment.index') }}">Admin Page</a>
+                        <a class="dropdown-item" data-toggle="modal" data-target="#profile" href="javascript:void()">Profile</a>
                         @elseif(Auth::user()->is('doctor'))
                         <a class="dropdown-item" href="{{ route('doctor.appointment.index') }}">Admin Page</a>
+                        <a class="dropdown-item" href="{{ route('doctor.profile.show') }}">Profile</a>
                         @elseif(Auth::user()->is('customer'))
                         <a class="dropdown-item" href="{{ route('user.order-history.show') }}">Order History</a>
-                        @endif
                         <a class="dropdown-item" data-toggle="modal" data-target="#profile" href="javascript:void()">Profile</a>
-
+                        @endif
                         {!! Form::open(['url' => route('account.logout'), 'method' => 'post', 'class' => 'd-none', 'id' => 'logout-form']) !!}
                         {!! Form::close()  !!}
                         <a class="dropdown-item logout" href="#">Logout</a>

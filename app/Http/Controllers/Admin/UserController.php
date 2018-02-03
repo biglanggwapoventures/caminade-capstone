@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Common\CRUDController;
 use App\User;
-use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Toast;
 
 class UserController extends CRUDController
 {
@@ -65,9 +65,12 @@ class UserController extends CRUDController
 
     public function afterStore($user)
     {
-        if (Auth::guest()) {
-            Auth::login($user);
-        }
+        Toast::success('New user has been added!');
+    }
+
+    public function afterUpdate($user)
+    {
+        Toast::success('User has been successfully updated!');
     }
 
     public function beforeIndex($query)

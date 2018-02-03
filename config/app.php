@@ -228,6 +228,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'MyHelper' => App\Helpers\MyHelper::class,
+        'Toast' => App\Helpers\ToastHelper::class,
 
     ],
 

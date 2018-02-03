@@ -8,6 +8,7 @@ use App\OrderLine;
 use App\Product;
 use App\User;
 use Illuminate\Validation\Rule;
+use Toast;
 
 class OrderController extends CRUDController
 {
@@ -29,8 +30,8 @@ class OrderController extends CRUDController
                 'parent.customer_name' => 'required_if:order_type,WALK_IN',
                 'parent.remarks' => ['present', 'nullable'],
                 'child.*.product_id' => ['required', 'distinct', Rule::exists($product->getTable(), $product->getKeyName())],
-                'child.*.stock' => ['required', 'numeric'],
-                // 'child.*.quantity' => ['required', 'numeric', 'max:child.*.stock'],
+                // 'child.*.stock' => ['required', 'numeric'],
+                'child.*.quantity' => ['required', 'numeric', 'max:child.*.stock'],
                 'child.*.unit_price' => ['required', 'numeric'],
                 'child.*.discount' => ['nullable', 'numeric'],
             ],
@@ -41,8 +42,8 @@ class OrderController extends CRUDController
                 'parent.remarks' => ['present', 'nullable'],
                 'child.*.id' => ['sometimes', Rule::exists($line->getTable(), $line->getKeyName())],
                 'child.*.product_id' => ['required', 'distinct', Rule::exists($product->getTable(), $product->getKeyName())],
-                'child.*.stock' => ['required', 'numeric'],
-                // 'child.*.quantity' => ['required', 'numeric', 'max:child.*.stock'],
+                // 'child.*.stock' => ['required', 'numeric'],
+                'child.*.quantity' => ['required', 'numeric', 'max:child.*.stock'],
                 'child.*.unit_price' => ['required', 'numeric'],
                 'child.*.discount' => ['nullable', 'numeric'],
             ],
@@ -99,11 +100,14 @@ class OrderController extends CRUDController
     public function afterStore($order)
     {
         $order->line->each->saveProductLog();
+        Toast::success('New order has been added!');
+
     }
 
     public function afterUpdate($order)
     {
         $order->line->each->saveProductLog();
+        Toast::success('Order has been successfully updated!');
     }
 
 }

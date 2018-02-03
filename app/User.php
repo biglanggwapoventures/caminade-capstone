@@ -157,4 +157,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(DoctorProfile::class, 'doctor_id');
     }
+
+    public function scopeDoctors($query)
+    {
+        return $query->whereHas('doctorProfile')->with('doctorProfile');
+    }
 }

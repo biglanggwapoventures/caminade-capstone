@@ -65,11 +65,10 @@
                             </td>
                             <td>
                                 {!! Form::bsText("child[{$loop->index}][quantity]", null, $row->quantity, ['data-name' => 'child[idx][quantity]', 'class' => 'form-control quantity']) !!}
-                                {!! Form::hidden('child[0][stock]', null, ['data-name' => 'child[idx][stock]', 'class' => 'stock ignore']) !!}
                             </td>
                             <td class="product-price clear"></td>
                             <td>
-                                {!! Form::hidden("child[{$loop->index}][unit_price]", null, ['data-name' => 'child[idx][unit_price]', 'class' => 'form-control unit-price ignore']) !!}
+                                {!! Form::hidden("child[{$loop->index}][unit_price]", $row->unit_price, ['data-name' => 'child[idx][unit_price]', 'class' => 'form-control unit-price ignore']) !!}
                                 {!! Form::bsText("child[{$loop->index}][discount]", null, $row->discount, ['data-name' => 'child[idx][discount]', 'class' => 'form-control discount']) !!}
                             </td>
                             <td class="amount clear"></td>
@@ -81,7 +80,6 @@
                             <td>{!! Form::bsSelect('child[0][product_id]', null, $productList, null, ['class' => 'product custom-select  w-100', 'data-name' => 'child[idx][product_id]']) !!}</td>
                             <td>
                                 {!! Form::bsText('child[0][quantity]', null, null, ['data-name' => 'child[idx][quantity]', 'class' => 'form-control quantity']) !!}
-                                {!! Form::hidden('child[0][stock]', null, ['data-name' => 'child[idx][stock]', 'class' => 'stock ignore']) !!}
                             </td>
                             <td class="product-price clear"></td>
                             <td>
@@ -137,12 +135,10 @@
             if(!product) return;
 
             var productInfo = products[product],
-                unitPrice = productInfo['price'].toFixed(2),
-                stock = productInfo['stock_on_hand'].toFixed(2);
+                unitPrice = productInfo['price'].toFixed(2);
 
             tr.find('.product-price').text(unitPrice);
             tr.find('.unit-price').val(unitPrice);
-            tr.find('.stock').val(stock);
 
             $('#product-table').trigger('table:changed');
             $('.quantity').trigger('change');

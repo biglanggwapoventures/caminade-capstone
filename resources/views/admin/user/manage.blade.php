@@ -61,7 +61,7 @@
                 {!! Form::bsPassword('password', 'Desired Password') !!}
             </div>
             <div class="col-sm-4">
-                {!! Form::bsPassword('password_confirmation', 'Password, Again') !!}
+                {!! Form::bsPassword('password_confirmation', 'Confirm Password') !!}
             </div>
         </div>
         <hr>

@@ -10,7 +10,7 @@ class DoctorProfile extends Model
     protected $fillable = [
         'doctor_id',
         'photo_filepath',
-        'specialty',
+        'specialization',
         'schedule',
         'bio',
     ];
@@ -27,5 +27,10 @@ class DoctorProfile extends Model
     public function account()
     {
         return $this->belongsTo(User::class, 'doctor_id');
+    }
+
+    public function getDutyHour($hour, $day)
+    {
+        return isset($this->schedule[$day][$hour]) ? $this->schedule[$day][$hour] : null;
     }
 }

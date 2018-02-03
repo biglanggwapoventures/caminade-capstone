@@ -8,6 +8,7 @@ use App\Pet;
 use App\Service;
 use Auth;
 use Illuminate\Validation\Rule;
+use Toast;
 
 class AppointmentController extends CRUDController
 {
@@ -81,5 +82,15 @@ class AppointmentController extends CRUDController
     public function beforeShow($model)
     {
         $model->load(['line.service', 'line.pet.breed', 'doctor', 'usedProducts.product', 'findings']);
+    }
+
+    public function afterStore($model)
+    {
+        Toast::success('Your appointment has been submitted. We will get back to you as soon as possible!');
+    }
+
+    public function afterUpdate($model)
+    {
+        Toast::success('Appointment has been successfully updated!');
     }
 }

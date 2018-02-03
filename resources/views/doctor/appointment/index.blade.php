@@ -33,23 +33,6 @@
             modal.find('.end').text(moment(data.approximate_finish_time, 'YYYY-MM-DD HH:mm').format('hh:mm a'));
             modal.find('.remarks').html(data['remarks'] || '<span class="text-danger"><em>Empty</em></span>');
             modal.find('.manage-link').attr('href', manageUrl.replace('__ID__', data.id));
-            // modal.find('.table tbody').append(function () {
-            //     var services = '',
-            //         totalDuration = 0,
-            //         totalAmount = 0;
-            //     $.each(data['line'], function (i, line) {
-            //         totalAmount += parseFloat(line['service']['price']);
-            //         totalDuration += parseFloat(line['service']['duration']);
-            //         services += '<tr class="service-line">';
-            //         services += '<td>'+line['pet']['name']+' ('+line['pet']['breed']['description']+')</td>';
-            //         services += '<td>'+line['service']['name']+'</td>';
-            //         services += '<td>'+line['service']['duration']+' mins</td>';
-            //         services += '<td>'+line['service']['price']+' php</td>';
-            //         services += '</tr>';
-            //     });
-            //     services += '<tr class="service-line"><td colspan="2" class="text-info text-right">TOTAL</td><td>'+totalDuration.toFixed(2)+' mins</td><td>'+totalAmount.toFixed(2)+' php</td></tr>'
-            //     return services;
-            // })
             modal.modal('show');
         }
 

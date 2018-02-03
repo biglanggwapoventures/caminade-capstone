@@ -8,6 +8,7 @@ use App\PetCategory;
 use App\PetReproductiveAlteration;
 use App\User;
 use Illuminate\Validation\Rule;
+use Toast;
 
 class PetController extends CRUDController
 {
@@ -77,4 +78,15 @@ class PetController extends CRUDController
     {
         $this->beforeCreate();
     }
+
+    public function afterStore($model)
+    {
+        Toast::success('New pet has been added!');
+    }
+
+    public function afterUpdate($model)
+    {
+        Toast::success('Pet has been successfully updated!');
+    }
+
 }

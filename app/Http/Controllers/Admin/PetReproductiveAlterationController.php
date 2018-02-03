@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Common\CRUDController;
 use App\PetReproductiveAlteration;
 use Illuminate\Validation\Rule;
+use Toast;
 
 class PetReproductiveAlterationController extends CRUDController
 {
@@ -22,5 +23,15 @@ class PetReproductiveAlterationController extends CRUDController
                 'gender' => ['nullable', Rule::in(['MALE', 'FEMALE'])],
             ],
         ];
+    }
+
+    public function afterStore($category)
+    {
+        Toast::success('New pet reproductive alteration has been added!');
+    }
+
+    public function afterUpdate($category)
+    {
+        Toast::success('Pet reproductive alteration has been successfully updated!');
     }
 }

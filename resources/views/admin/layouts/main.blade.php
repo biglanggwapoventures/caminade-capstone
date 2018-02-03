@@ -64,7 +64,11 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="{{ route('home') }}">Homepage</a>
+                            @if(auth()->user()->is('doctor'))
+                            <a class="dropdown-item" href="{{ route('doctor.profile.show') }}">Profile</a>
+                            @else
                             <a class="dropdown-item" data-toggle="modal" data-target="#profile" href="javascript:void()">Profile</a>
+                            @endif
 
                             {!! Form::open(['url' => route('account.logout'), 'method' => 'post', 'class' => 'd-none', 'id' => 'logout-form']) !!}
                             {!! Form::close()  !!}

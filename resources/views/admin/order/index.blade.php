@@ -39,7 +39,7 @@
             <tr>
                 <td>{{ $row->id }}</td>
                 <td>{{ $row->customer_id ? $row->customer->fullname : $row->customer_name }}</td>
-                <td>{{ date_create($row->created_at)->format('m/d/Y') }}</td>
+                <td>{{ date_create($row->order_date)->format('m/d/Y') }}</td>
                 <td>{{ number_format($row->total_amount) }}</td>
                 <td>
                     @include('components.form.index-actions', ['id' => $row->id, 'hideRemove' => true])

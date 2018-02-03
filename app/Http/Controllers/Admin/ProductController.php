@@ -8,6 +8,7 @@ use App\ProductCategory;
 use App\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Toast;
 
 class ProductController extends CRUDController
 {
@@ -107,10 +108,12 @@ class ProductController extends CRUDController
     public function afterStore($product)
     {
         $product->setBeginningBalance();
+        Toast::success('New product has been added!');
     }
 
     public function afterUpdate($product)
     {
         $product->setBeginningBalance();
+        Toast::success('Product has been added!');
     }
 }

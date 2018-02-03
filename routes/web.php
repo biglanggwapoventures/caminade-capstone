@@ -64,10 +64,13 @@ Route::group(['prefix' => 'user', 'namespace' => 'User', 'as' => 'user.', 'middl
 
 Route::group(['prefix' => 'doctor', 'namespace' => 'Doctor', 'as' => 'doctor.', 'middleware' => 'auth'], function () {
     Route::resource('appointment', 'AppointmentController');
+    Route::get('profile', 'UpdateDoctorProfileController@showPage')->name('profile.show');
+    Route::patch('profile', 'UpdateDoctorProfileController@update')->name('profile.update');
 });
 
 Route::get('our-products', 'ProductShowcaseController')->name('product-showcase');
 Route::get('our-services', 'ServiceShowcaseController')->name('service-showcase');
+Route::get('our-doctors', 'DoctorShowcaseController')->name('doctor-showcase');
 
 Route::group(['prefix' => 'api', 'as' => 'api:', 'middleware' => 'auth'], function () {
     Route::get('customer/{customerId}/pets', 'APIController@getPetsFromCustomer')->name('get-customer-pets');

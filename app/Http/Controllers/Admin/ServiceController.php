@@ -6,6 +6,7 @@ use App\Http\Controllers\Common\CRUDController;
 use App\Service;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Toast;
 
 class ServiceController extends CRUDController
 {
@@ -46,6 +47,16 @@ class ServiceController extends CRUDController
                 $query->where($column, $operand, $filter);
             }
         });
+    }
+
+    public function afterStore($model)
+    {
+        Toast::success('New service has been added!');
+    }
+
+    public function afterUpdate($model)
+    {
+        Toast::success('Service has been successfully updated!');
     }
 
 }
