@@ -27,4 +27,9 @@ class Service extends Model
     {
         return $query->orderBy('service_status')->orderBy('name');
     }
+
+    public function scopeActive($query)
+    {
+        return $query->whereServiceStatus('active');
+    }
 }

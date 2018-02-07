@@ -52,7 +52,7 @@
                         <a class="dropdown-item" href="{{ route('admin.appointment.index') }}">Admin Page</a>
                         <a class="dropdown-item" data-toggle="modal" data-target="#profile" href="javascript:void()">Profile</a>
                         @elseif(Auth::user()->is('doctor'))
-                        <a class="dropdown-item" href="{{ route('doctor.appointment.index') }}">Admin Page</a>
+                        <a class="dropdown-item" href="{{ route('doctor.appointment.index') }}">Doctor Page</a>
                         <a class="dropdown-item" href="{{ route('doctor.profile.show') }}">Profile</a>
                         @elseif(Auth::user()->is('customer'))
                         <a class="dropdown-item" href="{{ route('user.order-history.show') }}">Order History</a>

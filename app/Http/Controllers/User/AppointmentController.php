@@ -60,7 +60,7 @@ class AppointmentController extends CRUDController
     public function beforeCreate()
     {
         Auth::user()->load('pets.breed');
-        $services = Service::select('id', 'name', 'price', 'duration')->orderBy('name')->get();
+        $services = Service::active()->orderBy('name')->get(['id', 'name', 'price', 'duration']);
 
         $this->viewData['pets'] = Auth::user()->pets->mapWithKeys(function ($item) {
             return [$item->id => "{$item->name} ({$item->breed->description})"];

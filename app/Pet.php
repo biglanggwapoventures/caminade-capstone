@@ -75,7 +75,7 @@ class Pet extends Model
     public function petLogs()
     {
         return $this->hasMany(PetLog::class)->whereHas('appointment', function ($q) {
-            $q->whereAppointmentStatus('APPROVED')->whereNotNull('completed_at');
+            $q->whereAppointmentStatus('APPROVED');
         })->orderBy('log_date', 'desc')->orderBy('log_time', 'desc');
     }
 

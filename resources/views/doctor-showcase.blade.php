@@ -6,11 +6,11 @@
 <div class="container">
     @include('blocks.home-header')
     <h3 class="text-center mt-3 mb-4"><i class="fas fa-user-md fa-2x"></i> <br>Our Doctors</h3>
-    @foreach($doctors->chunk(2) AS $group)
+    @foreach($doctors->chunk(3) AS $group)
         <div class="row">
             @foreach($group AS $doctor)
                 <div class="col-sm-4">
-                    <div class="card">
+                    <div class="card mb-2">
                         <div style="height:250px;background-position: center center;background-repeat: no-repeat;background-size: cover;background-image: url('{{ $doctor->doctorProfile->photo_filepath }}')"></div>
                         <div class="card-body">
                             <h4 class="card-title mb-0">{{ $doctor->fullname }}</h4>
