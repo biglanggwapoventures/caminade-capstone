@@ -7,7 +7,7 @@
     @include('blocks.home-header')
     <div class="row mt-3">
         <div class="col">
-            <h4>My Order History</h4>
+            <h4>My Purchase History</h4>
         </div>
     </div>
     <div class="row">

@@ -13,7 +13,7 @@
 @section('body')
 <div class="row mt-4">
     <div class="col">
-        <h2>Orders</h2>
+        <h2>Purchases</h2>
     </div>
     <div class="col text-right">
         <a class="btn btn-info" href="{{ MyHelper::resource('index') }}">Back to list</a>
@@ -33,7 +33,7 @@
         @endif
             <div class="row">
                 <div class="col-4">
-                    {!! Form::bsSelect('order_type', 'Order Type', ['' => '', 'IN_HOUSE' => 'In House', 'WALK_IN'=> 'Walk In']) !!}
+                    {!! Form::bsSelect('order_type', 'Purchase Type', ['' => '', 'IN_HOUSE' => 'In House', 'WALK_IN'=> 'Walk In']) !!}
                 </div>
                 <div class="col-4 d-none fg">
                     {!! Form::bsSelect('parent[customer_id]', 'Customer', $customerList, $resourceData->customer_id, ['class' => 'custom-select w-100']) !!}

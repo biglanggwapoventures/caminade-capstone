@@ -43,6 +43,25 @@
             </tbody>
         </table>
     </div>
+    <div class="col-sm-5">
+        <h4 >Appearance</h4>
+        <table class="table table-sm table-bordered" style="table-layout: fixed">
+            <tbody>
+                <tr>
+                    <td class="bg-info text-white">Color:</td>
+                    <td class="text-center">{{ $resourceData->color }}</td>
+                </tr>
+                <tr>
+                    <td class="bg-info text-white">Weight (kg):</td>
+                    <td class="text-center">{{ $resourceData->weight ? number_format($resourceData->weight) : '' }}</td>
+                </tr>
+                <tr>
+                    <td class="bg-info text-white">Characteristics:</td>
+                    <td class="text-center">{{ $resourceData->physical_characteristics }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <div class="row">

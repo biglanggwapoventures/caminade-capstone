@@ -19,8 +19,8 @@ class AppointmentController extends CRUDController
         $this->relatedModel = 'line';
         $this->validationRules = [
             'store' => [
-                'parent.appointment_date' => 'required|date_format:Y-m-d',
-                'parent.appointment_time' => 'required|date_format:H:i',
+                'parent.appointment_date' => 'required|date_format:Y-m-d|after_or_equal:today',
+                'parent.appointment_time' => 'required|date_format:H:i:s',
                 'parent.remarks' => 'present',
                 'child.*.pet_id' => [
                     'required',
@@ -35,7 +35,7 @@ class AppointmentController extends CRUDController
             ],
             'update' => [
                 'parent.appointment_date' => 'required|date_format:Y-m-d',
-                'parent.appointment_time' => 'required|date_format:H:i',
+                'parent.appointment_time' => 'required|date_format:H:i:s',
                 'parent.remarks' => 'present',
                 'child.*.pet_id' => 'sometimes',
                 'child.*.pet_id' => [

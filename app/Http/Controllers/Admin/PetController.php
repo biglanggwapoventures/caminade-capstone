@@ -31,6 +31,9 @@ class PetController extends CRUDController
                 'gender' => ['required', 'in:MALE,FEMALE'],
                 'pet_breed_id' => ['required', Rule::exists('pet_breeds', 'id')],
                 'pet_reproductive_alteration_id' => ['required', Rule::exists('pet_reproductive_alterations', 'id')],
+                'color' => 'required',
+                'weight' => 'nullable|numeric',
+                'physical_characteristics' => 'nullable',
             ],
             'update' => [
                 'name' => ['required', 'max:120'],
@@ -44,6 +47,9 @@ class PetController extends CRUDController
                 'gender' => ['required', 'in:MALE,FEMALE'],
                 'pet_breed_id' => ['required', Rule::exists('pet_breeds', 'id')],
                 'pet_reproductive_alteration_id' => ['required', Rule::exists('pet_reproductive_alterations', 'id')],
+                'color' => 'required',
+                'weight' => 'nullable|numeric',
+                'physical_characteristics' => 'nullable',
             ],
         ];
     }

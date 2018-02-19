@@ -29,10 +29,10 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-3">
-                            {!! Form::bsDate('parent[appointment_date]', 'Date', $resourceData->appointment_date, ['class' => 'form-control']) !!}
+                            {!! Form::bsDate('parent[appointment_date]', 'Date', $resourceData->appointment_date, ['class' => 'form-control', 'min' => date('Y-m-d')]) !!}
                         </div>
                         <div class="col-3">
-                            {!! Form::bsTime('parent[appointment_time]', 'Time', $resourceData->appointment_time, ['class' => 'form-control']) !!}
+                             {!! Form::bsSelect('parent[appointment_time]', 'Time', MyHelper::timeInterval(date_create_from_format('H:i', '09:00'), date_create_from_format('H:i', '17:00')), $resourceData->appointment_time) !!}
                         </div>
                         <div class="col">
                             {!! Form::bsText('parent[remarks]', 'Remarks', $resourceData->remarks, ['class' => 'form-control']) !!}

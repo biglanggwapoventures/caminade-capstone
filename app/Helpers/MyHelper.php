@@ -2,6 +2,9 @@
 
 namespace App\Helpers;
 
+use DateInterval;
+use DatePeriod;
+
 class MyHelper
 {
 
@@ -24,6 +27,19 @@ class MyHelper
     public static function replaceBrackets($str, $with = '')
     {
         return rtrim(str_replace("[", ".", str_replace("][", ".", $str)), "]");
+    }
+
+    public static function timeInterval($start, $end)
+    {
+        $period = new DatePeriod($start, new DateInterval('PT0H30M'), $end);
+
+        $result = [];
+
+        foreach ($period as $dt) {
+            $result[$dt->format('H:i:s')] = $dt->format("h:i A");
+        }
+
+        return $result;
     }
 
 }

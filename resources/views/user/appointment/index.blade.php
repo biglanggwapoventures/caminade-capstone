@@ -27,7 +27,7 @@
                     @forelse($resourceList As $row)
                         <tr>
                             <td>#{{ $row->id }}</td>
-                            <td>{{ date_create($row->appointment_date)->format('m/d/Y') }} @ {{ date_create_immutable_from_format('H:i', $row->appointment_time)->format('h:i A') }}</td>
+                            <td>{{ date_create("{$row->appointment_date} {$row->appointment_time}")->format('m/d/Y \@ h:i A') }}</td>
                             <td>{{ $row->doctor->fullname }}</td>
                             <td>{{ number_format($row->getTotalAmount(), 2) }} php</td>
                             <td>

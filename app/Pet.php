@@ -19,6 +19,9 @@ class Pet extends Model
         'name',
         'birthdate',
         'gender',
+        'color',
+        'weight',
+        'physical_characteristics',
     ];
 
     public function owner()

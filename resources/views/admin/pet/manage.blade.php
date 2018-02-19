@@ -39,10 +39,22 @@
                 {!! Form::bsSelect('pet_breed_id', 'Breed', $breeds) !!}
             </div>
             <div class="col-3">
-                {!! Form::bsSelect('pet_reproductive_alteration_id', 'Reproductive Alteration', $reproductiveAlterations) !!}
+                {!! Form::bsSelect('pet_reproductive_alteration_id', 'Reproductive Alteration', $reproductiveAlterations, $resourceData->pet_reproductive_alteration_id) !!}
             </div>
             <div class="col">
                 {!! Form::bsDate('birthdate', 'Birthdate') !!}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-3">
+                {!! Form::bsText('color', 'Color') !!}
+            </div>
+            <div class="col-3">
+                {!! Form::bsText('weight', 'Weight (kg)') !!}
+            </div>
+            <div class="col-6">
+                {!! Form::bsText('physical_characteristics', 'Physical Characteristics') !!}
             </div>
         </div>
         <hr>

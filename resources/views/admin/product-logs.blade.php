@@ -13,33 +13,31 @@
 <div class="row">
     <div class="col-sm-8 offset-sm-2">
         {!! Form::open(['url' => route('admin.product.logs.adjust', ['product' => $product->id]), 'class' => 'form-inline']) !!}
-            <div class="form-group">
+             <div class="form-group">
                 <label class="control-label">Adjust Quantity</label>
-                {!! Form::number('quantity', null, ['class' => 'form-control ml-1']) !!}
+                {!! Form::select('action', ['add' => 'Add', 'subtract' => 'Subtract'], null, ['class' => 'custom-select ml-1']) !!}
             </div>
-
+            <div class="form-group">
+                {!! Form::number('quantity', null, ['class' => 'form-control ml-1', 'min' => 1]) !!}
+            </div>
             <button type="submit" class="btn btn-success ml-2">Submit</button>
         {!! Form::close() !!}
         <table class="table table-sm table-hover mt-2">
             <thead>
+                <th class="bg-primary text-white">Date</th>
+                <th class="bg-primary text-white">Description</th>
                 <th class="bg-primary text-white">Usage</th>
-                <th class="bg-primary text-white">Quantity</th>
-                <th class="bg-primary text-white">Stock on hand</th>
+                <th class="bg-primary text-white">Replenish</th>
+                <th class="bg-primary text-white">Balance</th>
             </thead>
             <tbody>
                 @foreach($product->logs as $log)
                     <tr>
+                        <td>{{ date_create($log->created_at)->format('F d, Y') }}</td>
                         <td>{{ $log->remarks }}</td>
-                        <td>
-                            @if($log->quantity > 0)
-                            <span class="text-success">
-                            @else
-                            <span class="text-danger">
-                            @endif
-                            {{ number_format($log->quantity) }}
-                            </span>
-                        </td>
-                        <td>{{ number_format($log->balance) }}</td>
+                        <td class="text-danger text-right">{{ $log->quantity < 0 ? number_format($log->quantity * -1) : '' }}</td>
+                        <td class="text-success text-right">{{ $log->quantity > 0 ? number_format($log->quantity) : '' }}</td>
+                        <td class="text-right">{{ number_format($log->balance) }}</td>
                     </tr>
                 @endforeach
             </tbody>

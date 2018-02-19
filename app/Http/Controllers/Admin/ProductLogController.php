@@ -24,9 +24,12 @@ class ProductLogController extends Controller
     {
         $request->validate([
             'quantity' => 'numeric',
+            'action' => 'required|in:add,subtract',
         ]);
 
-        $product->adjustQuantity($request->quantity);
+        $quantity = $request->action === 'subtract' ? (abs($request->quantity) * -1) : abs($request->quantity);
+
+        $product->adjustQuantity($quantity);
 
         return redirect()->back();
     }

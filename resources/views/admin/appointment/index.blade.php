@@ -50,7 +50,7 @@
                 <td>{{ $row->id }}</td>
                 <td>{{ $row->customer->fullname }}</td>
                 <td>{{ $row->doctor->fullname }}</td>
-                <td>{{ date_create($row->appointment_date)->format('m/d/Y') }} @ {{ date_create_immutable_from_format('H:i', $row->appointment_time)->format('h:i A') }}</td>
+                <td>{{ date_create("{$row->appointment_date} {$row->appointment_time}")->format('m/d/Y \@ h:i A') }}</td>
                 <td>
                     <ul class="list-unstyled pl-0">
                         @foreach($row->line AS $line)

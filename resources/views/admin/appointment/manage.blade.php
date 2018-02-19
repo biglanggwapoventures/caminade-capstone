@@ -39,10 +39,10 @@
                 <div class="col-5">
                     <div class="row">
                         <div class="col">
-                             {!! Form::bsDate('parent[appointment_date]', 'Date', $resourceData->appointment_date) !!}
+                             {!! Form::bsDate('parent[appointment_date]', 'Date', $resourceData->appointment_date, ['min' => date('Y-m-d')]) !!}
                         </div>
                         <div class="col">
-                            {!! Form::bsTime('parent[appointment_time]', 'Time', $resourceData->appointment_time) !!}
+                            {!! Form::bsSelect('parent[appointment_time]', 'Time', MyHelper::timeInterval(date_create_from_format('H:i', '09:00'), date_create_from_format('H:i', '17:00')), $resourceData->appointment_time) !!}
                         </div>
                     </div>
                 </div>
@@ -99,7 +99,7 @@
                     </tfoot>
             </table>
             </div>
-            <h4 class="mt-5">Products Used</h4>
+            <h4 class="mt-5">Products Used (Optional)</h4>
             <div class="card">
                 <table class="table dynamic mb-0" id="product-table"  data-product-details="{{ $productInfo->toJson() }}">
                     <thead>
@@ -143,7 +143,7 @@
                             <td></td>
                     </tfoot>
                 </table>
-            </div>
+            </div><!--
             <h4 class="mt-5">Pet Logs</h4>
             <div class="card">
                 <table class="table dynamic mb-0" id="service-table"  data-service-details="{{ $serviceInfo->toJson() }}">
@@ -197,7 +197,7 @@
                         </tr>
                     </tfoot>
                 </table>
-            </div>
+            </div> -->
             <h4 class="mt-5">Post Appointment Findings</h4>
             <div class="card">
                 <table class="table dynamic mb-0" id="service-table"  data-service-details="{{ $serviceInfo->toJson() }}">
@@ -242,7 +242,7 @@
             <hr>
             <div class="row">
                 <div class="col-4">
-                    {!! Form::bsSelect('parent[appointment_status]', 'Set appointment status', ['PENDING' => 'Pending', 'APPROVED' => 'Approved', 'DENIED' => 'Rejected', 'COMPLETED' => 'Completed'], $resourceData->appointment_status,['class' => 'custom-select w-100']) !!}
+                    {!! Form::bsSelect('parent[appointment_status]', 'Set appointment status', $statusOptions, $resourceData->appointment_status,['class' => 'custom-select w-100']) !!}
                 </div>
                 <div class="col">
                     {!! Form::bsText('parent[status_remarks]', 'Status Remarks', $resourceData->status_remarks) !!}
@@ -385,6 +385,20 @@
                 $('[name="parent[status_remarks]"]').closest('.form-group').addClass('d-none');
              }
          }).trigger('change');
+
+         if($('[name="parent[appointment_status]"]').val() === 'DENIED' || $('[name="parent[appointment_status]"]').val() === 'CANCELLED'){
+            $('.form-control').attr('readonly', 'readonly').addClass('form-control-plaintext');
+            $('.custom-select').addClass('d-none').after(function () {
+                console.log($(this).find('option:selected').text())
+                return $('<input />', {
+                    type:'text',
+                    'class': 'form-control form-control-plaintext',
+                    readonly: 'readonly',
+                    value: $(this).find('option:selected').text()
+                })
+            })
+            $('[type=submit]').remove();
+         }
     });
 </script>
 @endpush

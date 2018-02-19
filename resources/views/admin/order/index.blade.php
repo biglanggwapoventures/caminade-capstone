@@ -2,10 +2,10 @@
 @section('body')
 <div class="row mt-4">
     <div class="col">
-        <h2>Orders</h2>
+        <h2>Purchases</h2>
     </div>
     <div class="col text-right">
-        <a class="btn btn-info" href="{{ MyHelper::resource('create') }}">Create new order</a>
+        <a class="btn btn-info" href="{{ MyHelper::resource('create') }}">New purchases</a>
     </div>
 </div>
 {!! Form::open(['url' => MyHelper::resource('index'), 'method' => 'GET', 'class' => 'form-inline mb-2 mt-2']) !!}

@@ -100,14 +100,14 @@ class OrderController extends CRUDController
     public function afterStore($order)
     {
         $order->line->each->saveProductLog();
-        Toast::success('New order has been added!');
+        Toast::success('New purchases has been added!');
 
     }
 
     public function afterUpdate($order)
     {
         $order->line->each->saveProductLog();
-        Toast::success('Order has been successfully updated!');
+        Toast::success('Purchase has been successfully updated!');
     }
 
 }

@@ -30,10 +30,10 @@ class Appointment extends Model
 
     public function calculateApproximateFinishTime()
     {
-        $startTime = date_create_immutable_from_format('Y-m-d H:i', "{$this->appointment_date} {$this->appointment_time}");
+        $startTime = date_create_immutable_from_format('Y-m-d H:i:s', "{$this->appointment_date} {$this->appointment_time}");
         $duration = $this->calculateDuration();
 
-        $this->approximate_finish_time = $startTime->modify("+ {$duration} minutes")->format('Y-m-d H:i');
+        $this->approximate_finish_time = $startTime->modify("+ {$duration} minutes")->format('Y-m-d H:i:s');
         return $this->approximate_finish_time;
     }
 
@@ -57,16 +57,6 @@ class Appointment extends Model
     public function calculateTotalAmount()
     {
         return $this->calculateTotalServiceAmount() + $this->calculateTotalServiceAmount();
-    }
-
-    public function setAppointmentTimeAttribute($val)
-    {
-        $this->attributes['appointment_time'] = date_create_immutable_from_format('H:i', $val)->format('H:i:s');
-    }
-
-    public function getAppointmentTimeAttribute($val)
-    {
-        return $val ? date_create_immutable_from_format('H:i:s', $val)->format('H:i') : null;
     }
 
     public function customer()
@@ -178,14 +168,14 @@ class Appointment extends Model
 
     public function sendUpdateSMS()
     {
-        $appointmentTime = date_create_from_format('H:i', $this->appointment_time)->format('h:i a');
+        $appointmentTime = date_create_from_format('H:i:s', $this->appointment_time)->format('h:i a');
         $message = new SMS($this->customer->contact_number, "PetCare: You have an appointment today @ {$appointmentTime}. Please be guided. Thank you!");
         return $message->send();
     }
 
     public function getAppointmentTimestampAttribute()
     {
-        return Carbon::createFromFormat('Y-m-d H:i', "{$this->appointment_date} {$this->appointment_time}", 'Asia/Manila');
+        return Carbon::createFromFormat('Y-m-d H:i:s', "{$this->appointment_date} {$this->appointment_time}", 'Asia/Manila');
     }
 
 }

@@ -55,7 +55,7 @@
                         <a class="dropdown-item" href="{{ route('doctor.appointment.index') }}">Doctor Page</a>
                         <a class="dropdown-item" href="{{ route('doctor.profile.show') }}">Profile</a>
                         @elseif(Auth::user()->is('customer'))
-                        <a class="dropdown-item" href="{{ route('user.order-history.show') }}">Order History</a>
+                        <a class="dropdown-item" href="{{ route('user.order-history.show') }}">Purchase History</a>
                         <a class="dropdown-item" data-toggle="modal" data-target="#profile" href="javascript:void()">Profile</a>
                         @endif
                         {!! Form::open(['url' => route('account.logout'), 'method' => 'post', 'class' => 'd-none', 'id' => 'logout-form']) !!}

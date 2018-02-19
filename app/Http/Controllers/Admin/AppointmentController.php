@@ -42,12 +42,12 @@ class AppointmentController extends CRUDController
         $this->relatedModel = 'line';
         $this->validationRules = [
             'store' => [
-                'parent.appointment_date' => 'required|date_format:Y-m-d',
-                'parent.appointment_time' => 'required|date_format:H:i',
+                'parent.appointment_date' => 'required|date_format:Y-m-d|after_or_equal:today',
+                'parent.appointment_time' => 'required|date_format:H:i:s',
                 'parent.customer_id' => ['required', new CustomerRole],
                 'parent.doctor_id' => ['nullable', 'required_if:parent.appointment_status,APPROVED', new DoctorRole],
                 'parent.remarks' => 'present',
-                'parent.appointment_status' => ['required', Rule::in(['PENDING', 'APPROVED', 'DENIED', 'COMPLETED'])],
+                'parent.appointment_status' => ['required', Rule::in(['PENDING', 'APPROVED', 'DENIED', 'COMPLETED', 'CANCELLED'])],
                 'parent.status_remarks' => ['nullable', 'required_if:parent.appointment_status,DENIED'],
                 'parent.is_completed' => ['sometimes', 'boolean'],
                 'child.*.pet_id' => ['required', Rule::exists($pet->getTable(), $pet->getKeyName())],
@@ -57,18 +57,18 @@ class AppointmentController extends CRUDController
                 'findings.*.pet_id' => ['nullable', 'distinct', 'required_with:findings.*.findings', Rule::exists($pet->getTable(), $pet->getKeyName())],
                 'findings.*.findings' => ['nullable', 'required_with:products.*.pet_id'],
 
-                'pet_logs.*.pet_id' => ['nullable', 'required_with:pet_logs.*.log_date,pet_logs.*.log_time,pet_logs.*.remarks', Rule::exists($pet->getTable(), $pet->getKeyName())],
-                'pet_logs.*.log_date' => ['nullable', 'required_with:pet_logs.*.pet_id,pet_logs.*.log_time,pet_logs.*.remarks', 'date'],
-                'pet_logs.*.log_time' => ['nullable', 'required_with:pet_logs.*.pet_id,pet_logs.*.log_date,pet_logs.*.remarks', 'date_format:H:i'],
-                'pet_logs.*.remarks' => ['nullable', 'required_with:pet_logs.*.pet_id,pet_logs.*.log_date,pet_logs.*.log_time'],
+                // 'pet_logs.*.pet_id' => ['nullable', 'required_with:pet_logs.*.log_date,pet_logs.*.log_time,pet_logs.*.remarks', Rule::exists($pet->getTable(), $pet->getKeyName())],
+                // 'pet_logs.*.log_date' => ['nullable', 'required_with:pet_logs.*.pet_id,pet_logs.*.log_time,pet_logs.*.remarks', 'date'],
+                // 'pet_logs.*.log_time' => ['nullable', 'required_with:pet_logs.*.pet_id,pet_logs.*.log_date,pet_logs.*.remarks', 'date_format:H:i'],
+                // 'pet_logs.*.remarks' => ['nullable', 'required_with:pet_logs.*.pet_id,pet_logs.*.log_date,pet_logs.*.log_time'],
             ],
             'update' => [
                 'parent.appointment_date' => 'required|date_format:Y-m-d',
-                'parent.appointment_time' => 'required|date_format:H:i',
+                'parent.appointment_time' => 'required|date_format:H:i:s',
                 'parent.customer_id' => ['required', new CustomerRole],
                 'parent.doctor_id' => ['nullable', 'required_if:parent.appointment_status,APPROVED', new DoctorRole],
                 'parent.remarks' => 'present',
-                'parent.appointment_status' => ['required', Rule::in(['PENDING', 'APPROVED', 'DENIED', 'COMPLETED'])],
+                'parent.appointment_status' => ['required', Rule::in(['PENDING', 'APPROVED', 'DENIED', 'COMPLETED', 'CANCELLED'])],
                 'parent.status_remarks' => ['nullable', 'required_if:parent.appointment_status,DENIED'],
                 'parent.is_completed' => ['sometimes', 'boolean'],
                 'child.*.id' => ['sometimes', Rule::exists($line->getTable())],
@@ -80,11 +80,11 @@ class AppointmentController extends CRUDController
                 'findings.*.id' => ['sometimes', Rule::exists($finding->getTable())],
                 'findings.*.pet_id' => ['nullable', 'distinct', 'required_with:findings.*.findings', Rule::exists($pet->getTable(), $pet->getKeyName())],
                 'findings.*.findings' => ['nullable', 'required_with:products.*.pet_id'],
-                'pet_logs.*.id' => ['sometimes', Rule::exists($petLog->getTable(), $petLog->getKeyName())],
-                'pet_logs.*.pet_id' => ['nullable', 'required_with:pet_logs.*.log_date,pet_logs.*.log_time,pet_logs.*.remarks', Rule::exists($pet->getTable(), $pet->getKeyName())],
-                'pet_logs.*.log_date' => ['nullable', 'required_with:pet_logs.*.pet_id,pet_logs.*.log_time,pet_logs.*.remarks', 'date'],
-                'pet_logs.*.log_time' => ['nullable', 'required_with:pet_logs.*.pet_id,pet_logs.*.log_date,pet_logs.*.remarks', 'date_format:H:i'],
-                'pet_logs.*.remarks' => ['nullable', 'required_with:pet_logs.*.pet_id,pet_logs.*.log_date,pet_logs.*.log_time'],
+                // 'pet_logs.*.id' => ['sometimes', Rule::exists($petLog->getTable(), $petLog->getKeyName())],
+                // 'pet_logs.*.pet_id' => ['nullable', 'required_with:pet_logs.*.log_date,pet_logs.*.log_time,pet_logs.*.remarks', Rule::exists($pet->getTable(), $pet->getKeyName())],
+                // 'pet_logs.*.log_date' => ['nullable', 'required_with:pet_logs.*.pet_id,pet_logs.*.log_time,pet_logs.*.remarks', 'date'],
+                // 'pet_logs.*.log_time' => ['nullable', 'required_with:pet_logs.*.pet_id,pet_logs.*.log_date,pet_logs.*.remarks', 'date_format:H:i'],
+                // 'pet_logs.*.remarks' => ['nullable', 'required_with:pet_logs.*.pet_id,pet_logs.*.log_date,pet_logs.*.log_time'],
             ],
         ];
     }
@@ -119,7 +119,7 @@ class AppointmentController extends CRUDController
     {
         $this->createRelations($model, 'products', 'usedProducts');
         $this->createRelations($model, 'findings', 'findings');
-        $this->createRelations($model, 'pet_logs', 'petLogs');
+        // $this->createRelations($model, 'pet_logs', 'petLogs');
         $model->usedProducts->each->saveProductLog();
         Toast::success('New appointment has been added!');
     }
@@ -128,7 +128,7 @@ class AppointmentController extends CRUDController
     {
         $this->updateParentRelations($model, 'products', 'usedProducts');
         $this->updateParentRelations($model, 'findings', 'findings');
-        $this->updateParentRelations($model, 'pet_logs', 'petLogs');
+        // $this->updateParentRelations($model, 'pet_logs', 'petLogs');
         $model->usedProducts->each->saveProductLog();
         Toast::success('Appointment has been successfully updated!');
     }
@@ -150,6 +150,8 @@ class AppointmentController extends CRUDController
 
         $this->viewData['serviceInfo'] = $services->keyBy('id');
         $this->viewData['productInfo'] = $products->keyBy('id');
+
+        $this->viewData['statusOptions'] = $this->getStatusOptions('pending');
     }
 
     public function beforeEdit($model)
@@ -162,5 +164,20 @@ class AppointmentController extends CRUDController
                 return [$item->id => "{$item->name} ({$item->breed->description})"];
             })
             ->prepend('', '');
+        $this->viewData['statusOptions'] = $this->getStatusOptions($model->appointment_status);
+    }
+
+    private function getStatusOptions($currentStatus)
+    {
+        switch (strtolower($currentStatus)) {
+            case 'approved':
+                return ['APPROVED' => 'Approved', 'COMPLETED' => 'Completed'];
+            case 'completed':
+                return ['COMPLETED' => 'Completed'];
+            case 'cancelled':
+                return ['CANCELLED' => 'Cancelled'];
+            default:
+                return ['PENDING' => '', 'DENIED' => 'Rejected', 'APPROVED' => 'Approved', 'COMPLETED' => 'Completed'];
+        }
     }
 }
