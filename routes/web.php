@@ -14,6 +14,9 @@ Route::group(['prefix' => 'account', 'as' => 'account.'], function () {
         Route::patch('update', 'AccountController@update')->name('update');
     });
 
+    Route::get('sms-verification', 'SMSVerificationController@showPage')->name('show.verification-page');
+    Route::post('sms-verification', 'SMSVerificationController@doVerify')->name('do.verify');
+
 });
 
 Route::group(['prefix' => 'management', 'namespace' => 'Admin', 'as' => 'admin.', 'middleware' => 'auth'], function () {
@@ -38,6 +41,7 @@ Route::group(['prefix' => 'management', 'namespace' => 'Admin', 'as' => 'admin.'
         Route::resource('supplier', 'SupplierController');
         Route::resource('appointment', 'AppointmentController');
         Route::resource('order', 'OrderController');
+        Route::resource('boarding', 'BoardingController');
 
         Route::get('product/{product}/logs', 'ProductLogController@index')->name('product.logs');
         Route::post('product/{product}/logs', 'ProductLogController@adjust')->name('product.logs.adjust');
@@ -55,7 +59,7 @@ Route::group(['prefix' => 'auth', 'as' => 'auth:'], function () {
     Route::get('google/callback', 'GoogleAuthController@handleProviderCallback');
 });
 
-Route::group(['prefix' => 'user', 'namespace' => 'User', 'as' => 'user.', 'middleware' => ['auth', 'role:customer']], function () {
+Route::group(['prefix' => 'user', 'namespace' => 'User', 'as' => 'user.', 'middleware' => ['auth', 'sms-verified', 'role:customer']], function () {
     Route::resource('pet', 'PetController');
     Route::resource('appointment', 'AppointmentController');
     Route::post('appointment/{appointmentId}/cancel', 'CancelAppointmentController')->name('appointment.cancel');

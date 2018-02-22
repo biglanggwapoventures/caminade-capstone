@@ -5,6 +5,7 @@ namespace App;
 use App\AppointmentFinding;
 use App\AppointmentLine;
 use App\AppointmentProduct;
+use App\Boarding;
 use App\Facades\SMS;
 use App\PetLog;
 use App\User;
@@ -81,6 +82,11 @@ class Appointment extends Model
         return $this->hasMany(AppointmentLine::class);
     }
 
+    public function boarding()
+    {
+        return $this->hasOne(Boarding::class);
+    }
+
     public function usedProducts()
     {
         return $this->hasMany(AppointmentProduct::class);
@@ -100,9 +106,13 @@ class Appointment extends Model
 
     public function getTotalAmount()
     {
-        return $this->line->sum('service.price') + $this->usedProducts->sum(function ($used) {
-            return $used->quantity * $used->product->price;
-        });
+        return array_sum([
+            $this->line->sum('service_price'),
+            $this->usedProducts->sum(function ($used) {
+                return $used->quantity * $used->unit_price;
+            }),
+            optional($this->boarding)->total_payable,
+        ]);
     }
 
     public function is($status)

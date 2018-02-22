@@ -3,6 +3,7 @@
 namespace App;
 
 use App\AppointmentFinding;
+use App\BoardingPetLog;
 use App\PetBreed;
 use App\PetCategory;
 use App\PetReproductiveAlteration;
@@ -75,11 +76,16 @@ class Pet extends Model
         })->orderBy('created_at', 'desc');
     }
 
-    public function petLogs()
+    public function _petLogs()
     {
         return $this->hasMany(PetLog::class)->whereHas('appointment', function ($q) {
             $q->whereAppointmentStatus('APPROVED');
         })->orderBy('log_date', 'desc')->orderBy('log_time', 'desc');
+    }
+
+    public function petLogs()
+    {
+        return $this->hasMany(BoardingPetLog::class)->orderBy('log_date', 'desc')->orderBy('log_time', 'desc');
     }
 
     public function medicalHistory()

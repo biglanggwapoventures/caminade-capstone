@@ -96,7 +96,7 @@ class AppointmentController extends CRUDController
     public function beforeIndex($query)
     {
         // session()->flash('SMS', ['result' => 'success', 'message' => 'SMS has been sent succesfully!']);
-
+        $query->with(['line', 'usedProducts', 'boarding.productsUsed']);
         collect($this->filterFields)->each(function ($value, $key) use ($query) {
             if ($filter = request()->{$key}) {
                 list($column, $operand) = $value;
@@ -115,7 +115,7 @@ class AppointmentController extends CRUDController
     }
 
     public function beforeUpdate()
-    { 
+    {
         $this->beforeStore();
     }
 
@@ -162,7 +162,7 @@ class AppointmentController extends CRUDController
     {
         $this->beforeCreate();
 
-        $model->load(['line.service', 'usedProducts.product', 'findings', 'petLogs']);
+        $model->load(['line.service', 'usedProducts.product', 'findings', 'petLogs', 'boarding.productsUsed']);
         $this->viewData['customerPets'] = Pet::with('breed')->ownedBy($model->customer_id)->get()
             ->mapWithKeys(function ($item) {
                 return [$item->id => "{$item->name} ({$item->breed->description})"];

@@ -40,6 +40,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('admin.appointment.index') }}">Appointments</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('admin.boarding.index') }}">Boarding</a>
+                    </li>
                     @endif
 
                     @if(Auth::user()->is('admin'))

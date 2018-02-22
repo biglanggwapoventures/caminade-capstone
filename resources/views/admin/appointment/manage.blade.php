@@ -39,7 +39,7 @@
                 <div class="col-5">
                     <div class="row">
                         <div class="col">
-                             {!! Form::bsDate('parent[appointment_date]', 'Date', $resourceData->appointment_date, ['min' => date('Y-m-d')]) !!}
+                             {!! Form::bsDate('parent[appointment_date]', 'Date', $resourceData->appointment_date, ['min' => is_null($resourceData->id) ? date('Y-m-d') : 'false']) !!}
                         </div>
                         <div class="col">
                             {!! Form::bsSelect('parent[appointment_time]', 'Time', MyHelper::timeInterval(date_create_from_format('H:i', '09:00'), date_create_from_format('H:i', '17:00')), $resourceData->appointment_time) !!}
@@ -51,11 +51,9 @@
                 </div>
             </div>
             {!! Form::bsTextarea('parent[remarks]', 'Remarks', $resourceData->remarks, ['rows' => 3]) !!}
+
             <h4 class="mt-5">Services Rendered</h4>
-            {{-- @php
-                echo '<pre>';
-                print_r($resourceData->toArray());
-            @endphp --}}
+
             <div class="card">
                 <table class="table dynamic mb-0" id="service-table"  data-service-details="{{ $serviceInfo->toJson() }}">
                     <thead>
@@ -109,6 +107,34 @@
                     </tfoot>
             </table>
             </div>
+            @if($resourceData->id)
+                <h4 class="mt-5">Boarding</h4>
+                @if($resourceData->boarding)
+                <div class="card">
+                    <div class="card-body">
+
+                            <a href="{{ route('admin.boarding.edit', ['id' => $resourceData->boarding->id]) }}" class="btn btn-info">
+                                Boarding #{{ $resourceData->boarding->id }}
+                            </a>
+                            <br>
+                            Boarding Start Date: {{ date_create($resourceData->boarding->timestamp_in)->format('F d, Y') }}
+                            <br>
+                            Boarding End Date: {{ $resourceData->boarding->timestamp_out ? date_create($resourceData->boarding->timestamp_out)->format('F d, Y') : 'N/A' }}
+                            <br>
+                            Payable: {{ number_format($resourceData->boarding->total_payable, 2) }}
+
+                    </div>
+                </div>
+                @else
+                    <div class="alert alert-info">
+                        No boarding
+                        <hr>
+                        <p>
+                            <a href="{{ route('admin.boarding.create', ['appointment-id' => $resourceData->id]) }}" class="btn btn-info">Input boarding info</a>
+                        </p>
+                    </div>
+                @endif
+            @endif
             <h4 class="mt-5">Products Used (Optional)</h4>
             <div class="card">
                 <table class="table dynamic mb-0" id="product-table"  data-product-details="{{ $productInfo->toJson() }}">

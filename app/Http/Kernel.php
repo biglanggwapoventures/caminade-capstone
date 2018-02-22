@@ -59,6 +59,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'role' => \App\Http\Middleware\RoleMiddleware::class,
         'auth' => \App\Http\Middleware\AuthMiddleware::class,
+        'sms-verified' => \App\Http\Middleware\SMSVerifiedMiddleware::class,
 
     ];
 }

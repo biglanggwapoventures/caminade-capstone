@@ -32,6 +32,8 @@ class User extends Authenticatable
         'contact_number',
         'address',
         'role',
+        'verification_code',
+        'verified_at',
         'role_title',
         'active',
     ];

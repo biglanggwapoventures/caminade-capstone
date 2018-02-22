@@ -58,7 +58,10 @@
                         @endforeach
                     </ul>
                 </td>
-                <td>{{ number_format($row->getTotalAmount(), 2) }} php</td>
+                <td>
+                    {{ number_format($row->getTotalAmount(), 2) }} <br>
+
+                </td>
                 <td>
                     {{ $row->appointment_status }}
                     @if($row->is('denied'))
@@ -67,7 +70,9 @@
                 </td>
                 <td>
                     @include('components.form.index-actions', ['id' => $row->id, 'hideRemove' => true])
-                    <button type="button" class="btn btn-success" data-target="#send-sms" data-toggle="modal" data-pk="{{ $row->id }}">SMS</button>
+                    @if(!in_array(strtolower($row->appointment_status), ['completed', 'denied', 'pending']))
+                        <button type="button" class="btn btn-success" data-target="#send-sms" data-toggle="modal" data-pk="{{ $row->id }}">SMS</button>
+                    @endif
                 </td>
             </tr>
         @empty

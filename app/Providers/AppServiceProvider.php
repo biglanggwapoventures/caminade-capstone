@@ -19,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
         Form::component('bsTextarea', 'components.form.textarea', ['name', 'label' => null, 'value' => null, 'attributes' => []]);
         Form::component('bsPassword', 'components.form.password', ['name', 'label' => null, 'attributes' => []]);
         Form::component('bsDate', 'components.form.date', ['name', 'label' => null, 'value' => null, 'attributes' => []]);
+        Form::component('bsDatetime', 'components.form.datetime', ['name', 'label' => null, 'value' => null, 'attributes' => []]);
         Form::component('bsTime', 'components.form.time', ['name', 'label' => null, 'value' => null, 'attributes' => []]);
         Form::component('bsSelect', 'components.form.select', ['name', 'label' => null, 'options' => [], 'value' => null, 'attributes' => []]);
     }

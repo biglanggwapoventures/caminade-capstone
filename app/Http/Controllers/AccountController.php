@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Facades\SMS;
 use App\User;
 use Auth;
 use Illuminate\Http\Request;
@@ -29,16 +30,24 @@ class AccountController extends Controller
             'email' => ['required', 'email', Rule::unique($this->model->getTable())],
             'password' => 'required|min:6',
             'password_confirmation' => 'required|same:password',
+            '',
         ]);
 
+        $input['verification_code'] = uniqid();
+
         $user = $this->model->create($input);
+        $message = new SMS($user->contact_number, "PetCare: Verification Code: {$input['verification_code']}");
+        $message->send();
+
         Auth::login($user);
 
-        Toast::success("Welcome to PetCare, {$user->fullname}!");
+        // return redirect()->
+
+        // Toast::success("Welcome to PetCare, {$user->fullname}!");
 
         return response()->json([
             'result' => true,
-            'next_url' => route('home'),
+            'next_url' => route('sms-verification'),
         ]);
     }
 
