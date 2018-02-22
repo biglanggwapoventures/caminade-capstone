@@ -47,7 +47,7 @@ class AccountController extends Controller
 
         return response()->json([
             'result' => true,
-            'next_url' => route('sms-verification'),
+            'next_url' => route('account.show.verification-page'),
         ]);
     }
 
