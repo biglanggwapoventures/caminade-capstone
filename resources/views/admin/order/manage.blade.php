@@ -66,9 +66,10 @@
                             <td>
                                 {!! Form::bsText("child[{$loop->index}][quantity]", null, $row->quantity, ['data-name' => 'child[idx][quantity]', 'class' => 'form-control quantity']) !!}
                             </td>
-                            <td class="product-price clear"></td>
                             <td>
-                                {!! Form::hidden("child[{$loop->index}][unit_price]", $row->unit_price, ['data-name' => 'child[idx][unit_price]', 'class' => 'form-control unit-price ignore']) !!}
+                                {!! Form::bsText("child[{$loop->index}][unit_price]", null, $row->unit_price, ['data-name' => 'child[idx][unit_price]', 'class' => 'form-control unit-price ignore']) !!}
+                            </td>
+                            <td>
                                 {!! Form::bsText("child[{$loop->index}][discount]", null, $row->discount, ['data-name' => 'child[idx][discount]', 'class' => 'form-control discount']) !!}
                             </td>
                             <td class="amount clear"></td>
@@ -81,9 +82,11 @@
                             <td>
                                 {!! Form::bsText('child[0][quantity]', null, null, ['data-name' => 'child[idx][quantity]', 'class' => 'form-control quantity']) !!}
                             </td>
-                            <td class="product-price clear"></td>
                             <td>
-                                {!! Form::hidden('child[0][unit_price]', null, ['data-name' => 'child[idx][unit_price]', 'class' => 'unit-price ignore']) !!}
+                                {!! Form::bsText('child[0][unit_price]', null, null, ['data-name' => 'child[idx][unit_price]', 'class' => 'form-control unit-price ignore']) !!}
+                                {!! Form::hidden(null, null, ['data-name' => 'child[idx][unit_price]', 'class' => 'form-control unit-price ignore']) !!}
+                            </td>
+                            <td>
                                 {!! Form::bsText('child[0][discount]', null, null, ['data-name' => 'child[idx][discount]', 'class' => 'form-control discount']) !!}
                             </td>
                             <td class="amount clear"></td>
@@ -112,7 +115,7 @@
 <script type="text/javascript">
     jQuery(document).ready(function($) {
         var products = $('#product-table').data('product-details');
-
+        
         function getProducTotal() {
              var total = 0;
             $('#product-table tbody tr').each(function () {
@@ -122,8 +125,11 @@
                 var productInfo = products[product],
                     quantity = parseFloat($this.find('.quantity').val() || 0),
                     discount = parseFloat($this.find('.discount').val() || 0);
-                total +=  (parseFloat(productInfo['price'] - discount) * quantity || 0)
+                    originalUnitPrice = parseFloat($this.find('.unit-price').val() || productInfo['price']);
+
+                total +=  (parseFloat(originalUnitPrice - discount) * quantity || 0);
             })
+
             return total;
         }
 
@@ -135,10 +141,10 @@
             if(!product) return;
 
             var productInfo = products[product],
-                unitPrice = productInfo['price'].toFixed(2);
+                unitPrice = productInfo['price'];
 
             tr.find('.product-price').text(unitPrice);
-            tr.find('.unit-price').val(unitPrice);
+            tr.find('.unit-price').val(unitPrice);  
 
             $('#product-table').trigger('table:changed');
             $('.quantity').trigger('change');
@@ -153,7 +159,7 @@
 
             if(!product) return;
             var productInfo = products[product],
-                unitPrice = parseFloat(productInfo['price'].toFixed(2)),
+                unitPrice = parseFloat(tr.find('.unit-price').val() || productInfo['price']),
                 discount = parseFloat(tr.find('.discount').val() || 0),
                 quantity = parseFloat(tr.find('.quantity').val() || 0);
 

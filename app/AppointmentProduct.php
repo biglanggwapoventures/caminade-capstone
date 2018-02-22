@@ -12,6 +12,7 @@ class AppointmentProduct extends Model
         'appointment_id',
         'product_id',
         'quantity',
+        'unit_price'
     ];
 
     protected $hidden = [

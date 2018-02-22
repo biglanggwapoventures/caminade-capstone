@@ -12,6 +12,8 @@ class AppointmentLine extends Model
         'appointment_id',
         'service_id',
         'pet_id',
+        'service_price',
+        'service_duration'
     ];
 
     protected $hidden = [

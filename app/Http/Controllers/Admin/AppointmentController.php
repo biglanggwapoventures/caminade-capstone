@@ -54,6 +54,7 @@ class AppointmentController extends CRUDController
                 'child.*.service_id' => ['required', Rule::exists($service->getTable(), $service->getKeyName())],
                 'products.*.product_id' => ['nullable', 'required_with:products.*.quantity', Rule::exists($product->getTable(), $pet->getKeyName())],
                 'products.*.quantity' => ['nullable', 'required_with:products.*.product_id', 'numeric'],
+                'products.*.unit_price' => ['nullable', 'required_with:products.*.product_id', 'numeric'],
                 'findings.*.pet_id' => ['nullable', 'distinct', 'required_with:findings.*.findings', Rule::exists($pet->getTable(), $pet->getKeyName())],
                 'findings.*.findings' => ['nullable', 'required_with:products.*.pet_id'],
 
@@ -74,9 +75,12 @@ class AppointmentController extends CRUDController
                 'child.*.id' => ['sometimes', Rule::exists($line->getTable())],
                 'child.*.pet_id' => ['required', Rule::exists($pet->getTable(), $pet->getKeyName())],
                 'child.*.service_id' => ['required', Rule::exists($service->getTable(), $service->getKeyName())],
+                'child.*.service_price' => ['required', 'required_with:child.*.service_id', 'numeric'],
+                'child.*.service_duration' => ['required', 'required_with:child.*.service_id', 'numeric'],
                 'products.*.id' => ['sometimes', Rule::exists($usedProduct->getTable())],
                 'products.*.product_id' => ['nullable', 'required_with:products.*.quantity', Rule::exists($product->getTable(), $pet->getKeyName())],
                 'products.*.quantity' => ['nullable', 'required_with:products.*.product_id', 'numeric'],
+                'products.*.unit_price' => ['nullable', 'required_with:products.*.product_id', 'numeric'],
                 'findings.*.id' => ['sometimes', Rule::exists($finding->getTable())],
                 'findings.*.pet_id' => ['nullable', 'distinct', 'required_with:findings.*.findings', Rule::exists($pet->getTable(), $pet->getKeyName())],
                 'findings.*.findings' => ['nullable', 'required_with:products.*.pet_id'],
@@ -111,7 +115,7 @@ class AppointmentController extends CRUDController
     }
 
     public function beforeUpdate()
-    {
+    { 
         $this->beforeStore();
     }
 

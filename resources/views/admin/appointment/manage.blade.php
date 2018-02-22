@@ -52,6 +52,10 @@
             </div>
             {!! Form::bsTextarea('parent[remarks]', 'Remarks', $resourceData->remarks, ['rows' => 3]) !!}
             <h4 class="mt-5">Services Rendered</h4>
+            {{-- @php
+                echo '<pre>';
+                print_r($resourceData->toArray());
+            @endphp --}}
             <div class="card">
                 <table class="table dynamic mb-0" id="service-table"  data-service-details="{{ $serviceInfo->toJson() }}">
                     <thead>
@@ -67,7 +71,11 @@
                         @if(is_null($resourceData->id))
                         <tr>
                             <td>{!! Form::bsSelect('child[0][pet_id]', null, [], null, ['class' => 'pets custom-select  w-100', 'data-name' => 'child[idx][pet_id]']) !!}</td>
-                            <td>{!! Form::bsSelect('child[0][service_id]', null, $serviceList,  null, ['class' => 'custom-select w-100 service', 'data-name' => 'child[idx][service_id]']) !!}</td>
+                            <td>
+                                {!! Form::bsSelect('child[0][service_id]', null, $serviceList,  null, ['class' => 'custom-select w-100 service', 'data-name' => 'child[idx][service_id]']) !!}
+                                {!! Form::hidden("child[0][service_price]",null, ['class' => 'hidden-service-price', 'data-name' => 'child[idx][service_price]']) !!}
+                                {!! Form::hidden("child[0][service_duration]", null, ['class' => 'hidden-service-duration', 'data-name' => 'child[idx][service_duration]']) !!}
+                            </td>
                             <td class="service-duration clear"></td>
                             <td class="service-price clear"></td>
                             <td><button class="btn btn-danger remove-line" type="button"><i class="fas fa-times"></i></button></td>
@@ -81,6 +89,8 @@
                                 </td>
                                 <td>
                                     {!! Form::bsSelect("child[{$loop->index}][service_id]", null, $serviceList,  $row->service_id, ['class' => 'custom-select w-100 service', 'data-name' => 'child[idx][service_id]']) !!}
+                                    {!! Form::hidden("child[{$loop->index}][service_price]", $row->service_price, ['class' => 'hidden-service-price', 'data-name' => 'child[idx][service_price]']) !!}
+                                    {!! Form::hidden("child[{$loop->index}][service_duration]", $row->service_duration, ['class' => 'hidden-service-duration', 'data-name' => 'child[idx][service_duration]']) !!}
                                 </td>
                                 <td class="service-duration clear"></td>
                                 <td class="service-price clear"></td>
@@ -115,7 +125,10 @@
                         @if($resourceData->usedProducts->isEmpty())
                         <tr>
                             <td>{!! Form::bsSelect('products[0][product_id]', null, $productList, null, ['class' => 'product custom-select  w-100', 'data-name' => 'products[idx][product_id]']) !!}</td>
-                            <td>{!! Form::bsText('products[0][quantity]', null, null, ['data-name' => 'products[idx][quantity]', 'class' => 'form-control quantity']) !!}</td>
+                            <td>
+                                {!! Form::bsText('products[0][quantity]', null, null, ['data-name' => 'products[idx][quantity]', 'class' => 'form-control quantity']) !!}
+                                {!! Form::hidden("products[0][unit_price]", null, ['data-name' => 'products[idx][unit_price]', 'class' => 'form-control unit-price']) !!}
+                            </td>
                             <td class="product-price clear"></td>
                             <td class="amount clear"></td>
                             <td><button class="btn btn-danger remove-line" type="button"><i class="fas fa-times"></i></button></td>
@@ -127,7 +140,10 @@
                                     {!! Form::bsSelect("products[{$loop->index}][product_id]", null, $productList, $row->product_id, ['class' => 'product custom-select  w-100', 'data-name' => 'products[idx][product_id]']) !!}
                                     {!! Form::hidden("products[{$loop->index}][id]", $row->id) !!}
                                 </td>
-                                <td>{!! Form::bsText("products[{$loop->index}][quantity]", null, $row->quantity, ['data-name' => 'products[idx][quantity]', 'class' => 'form-control quantity']) !!}</td>
+                                <td>
+                                    {!! Form::bsText("products[{$loop->index}][quantity]", null, $row->quantity, ['data-name' => 'products[idx][quantity]', 'class' => 'form-control quantity']) !!}
+                                    {!! Form::hidden("products[{$loop->index}][unit_price]", $row->unit_price, ['data-name' => 'products[idx][unit_price]', 'class' => 'form-control unit-price']) !!}
+                                </td>
                                 <td class="product-price clear"></td>
                                 <td class="amount clear"></td>
                                 <td><button class="btn btn-danger remove-line" type="button"><i class="fas fa-times"></i></button></td>
@@ -268,8 +284,9 @@
                 var $this = $(this),
                     service = $this.find('.service').val() ;
                 if(!service) return;
-                var serviceInfo = services[service];
-                total += (parseFloat(serviceInfo['price']) || 0)
+                var serviceInfo = services[service],
+                    service_price = $this.find('.hidden-service-price').val();
+                total += (parseFloat(service_price) || 0)
             })
             return total;
         }
@@ -282,7 +299,8 @@
                 if(!product) return;
                 var productInfo = products[product],
                     quantity = parseFloat($this.find('.quantity').val())
-                total +=  (parseFloat(productInfo['price']) * quantity || 0)
+                    unit_price = parseFloat($this.find('.unit-price').val())
+                    total +=  (unit_price * quantity || 0)
             })
             return total;
         }
@@ -293,23 +311,50 @@
             if(!val) return;
             var info = services[val],
                 tr = $this.closest('tr');
-            tr.find('.service-duration').text(info['duration']+' minutes');
-            tr.find('.service-price').text(info['price']+' php');
+            tr.find('.service-duration').text(tr.find('.hidden-service-duration').val()+' minutes');
+            tr.find('.service-price').text(tr.find('.hidden-service-price').val()+' php');
             $('#service-table').trigger('table:changed');
         });
         $('.service').trigger('change');
+
+        $('#service-table').on('change', '.service', function () {
+            var $this = $(this),
+                val = $(this).val(),
+                tr = $this.closest('tr');
+            if(!val) return;
+            var info = services[val];
+            tr.find('.service-duration').text(info['price']+' minutes');
+            tr.find('.service-price').text(info['price']+' php');
+            tr.find('.hidden-service-duration').val(info['duration']);
+            tr.find('.hidden-service-price').val(info['price']);
+            $('#service-table').trigger('table:changed');
+        });
 
          $('#product-table').on('change', '.product', function () {
             var $this = $(this),
                 tr = $this.closest('tr'),
                 product = tr.find('.product').val();
             if(!product) return;
-            var productInfo = products[product];
-            tr.find('.product-price').text(productInfo['price'].toFixed(2));
+            var productInfo = products[product],
+                amount = parseFloat(productInfo['price']) * parseFloat(tr.find('.quantity').val() || 0),
+                unit_price = parseFloat(tr.find('.unit-price').val())
+            tr.find('.amount').text(amount.toFixed(2));
+            tr.find('.product-price').text(unit_price.toFixed(2));
             $('#product-table').trigger('table:changed');
          });
          $('.product').trigger('change');
 
+        $('#product-table').on('change', '.product', function () {
+            var $this = $(this),
+                tr = $this.closest('tr'),
+                product = tr.find('.product').val();
+            if(!product) return;
+            var productInfo = products[product],
+                price = productInfo['price'].toFixed(2);
+            tr.find('.product-price').text(productInfo['price'].toFixed(2));
+            tr.find('.unit-price').val(price);
+            $('#product-table').trigger('table:changed');
+        });
 
         $('#product-table').on('change', '.quantity', function () {
             var $this = $(this),
@@ -318,7 +363,8 @@
 
             if(!product) return;
             var productInfo = products[product],
-                amount = parseFloat(productInfo['price']) * parseFloat($this.val());
+                unit_price = parseFloat(tr.find('.unit-price').val()),
+                amount = parseFloat(unit_price * parseFloat($this.val()));
             tr.find('.amount').text(amount.toFixed(2));
             $('#product-table').trigger('table:changed');
         });
