@@ -26,7 +26,7 @@
                         <div class="alert alert-success p-2">
                             <p class="mb-1">This appointment has been approved!</p>
                             <p class="mb-0">
-                                Assigned Doctor:
+                                Assigned Veterinarian:
                                 <strong>{{ $resourceData->doctor->fullname }}</strong>
                             </p>
                         </div>

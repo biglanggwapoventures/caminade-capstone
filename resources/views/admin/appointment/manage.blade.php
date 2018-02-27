@@ -47,7 +47,7 @@
                     </div>
                 </div>
                 <div class="col-4">
-                    {!! Form::bsSelect('parent[doctor_id]', 'Assigned Doctor', $doctorList, $resourceData->doctor_id, ['class' => 'custom-select w-100']) !!}
+                    {!! Form::bsSelect('parent[doctor_id]', 'Assigned Veterinarian', $doctorList, $resourceData->doctor_id, ['class' => 'custom-select w-100']) !!}
                 </div>
             </div>
             {!! Form::bsTextarea('parent[remarks]', 'Remarks', $resourceData->remarks, ['rows' => 3]) !!}

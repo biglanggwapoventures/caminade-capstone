@@ -46,9 +46,9 @@ class BoardingController extends CRUDController
 
                 'pet_logs' => ['nullable', 'array'],
                 'pet_logs.*.pet_id' => ['nullable', Rule::exists($pet->getTable(), $pet->getKeyName())],
-                'pet_logs.*.log_date' => ['required_with:pet_logs.*.pet_id', 'date'],
-                'pet_logs.*.log_time' => ['required_with:pet_logs.*.pet_id', 'date_format:H:i'],
-                'pet_logs.*.remarks' => ['required_with:pet_logs.*.pet_id'],
+                'pet_logs.*.log_date' => ['nullable', 'required_with:pet_logs.*.pet_id', 'date'],
+                'pet_logs.*.log_time' => ['nullable', 'required_with:pet_logs.*.pet_id', 'date_format:H:i'],
+                'pet_logs.*.remarks' => ['nullable', 'required_with:pet_logs.*.pet_id'],
             ],
             'update' => [
                 'appointment_id' => ['required', Rule::exists($appointment->getTable(), $appointment->getKeyName())],
@@ -68,9 +68,9 @@ class BoardingController extends CRUDController
                 'pet_logs' => ['nullable', 'array'],
                 'pet_logs.*.id' => ['sometimes', Rule::exists($petLog->getTable(), $petLog->getKeyName())],
                 'pet_logs.*.pet_id' => ['nullable', Rule::exists($pet->getTable(), $pet->getKeyName())],
-                'pet_logs.*.log_date' => ['required_with:pet_logs.*.pet_id', 'date'],
-                'pet_logs.*.log_time' => ['required_with:pet_logs.*.pet_id', 'date_format:H:i'],
-                'pet_logs.*.remarks' => ['required_with:pet_logs.*.pet_id'],
+                'pet_logs.*.log_date' => ['nullable', 'required_with:pet_logs.*.pet_id', 'date'],
+                'pet_logs.*.log_time' => ['nullable', 'required_with:pet_logs.*.pet_id', 'date_format:H:i'],
+                'pet_logs.*.remarks' => ['nullable', 'required_with:pet_logs.*.pet_id'],
             ],
         ];
     }
