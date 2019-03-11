@@ -59,17 +59,7 @@
       </div>
 
       <div class="row">
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              <i class="fas fa-map-marker-alt"></i> Our Location
-            </div>
-            <div class="card-body p-0">
-              <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1962.484123408656!2d123.91305189444277!3d10.344424049797059!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x9bfcf89fe5915678!2s5R+Veterinary+Clinic!5e0!3m2!1sen!2sph!4v1517846730174" width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
+        <div class="col-md-6 offset-md-3">
 
           <div class="card mb-3">
             <div class="card-body p-2">
