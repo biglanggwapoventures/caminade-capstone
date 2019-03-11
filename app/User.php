@@ -162,6 +162,6 @@ class User extends Authenticatable
 
     public function scopeDoctors($query)
     {
-        return $query->whereHas('doctorProfile')->with('doctorProfile');
+        return $query->has('doctorProfile')->with('doctorProfile');
     }
 }

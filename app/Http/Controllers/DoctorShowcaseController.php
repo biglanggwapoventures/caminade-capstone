@@ -10,6 +10,7 @@ class DoctorShowcaseController extends Controller
     public function __invoke(Request $request)
     {
         $doctors = User::doctors()->get();
+        
         return view('doctor-showcase', [
             'doctors' => $doctors,
         ]);

@@ -59,7 +59,7 @@ Route::group(['prefix' => 'auth', 'as' => 'auth:'], function () {
     Route::get('google/callback', 'GoogleAuthController@handleProviderCallback');
 });
 
-Route::group(['prefix' => 'user', 'namespace' => 'User', 'as' => 'user.', 'middleware' => ['auth', 'sms-verified', 'role:customer']], function () {
+Route::group(['prefix' => 'user', 'namespace' => 'User', 'as' => 'user.', 'middleware' => ['auth', 'role:customer']], function () {
     Route::resource('pet', 'PetController');
     Route::resource('appointment', 'AppointmentController');
     Route::post('appointment/{appointmentId}/cancel', 'CancelAppointmentController')->name('appointment.cancel');

@@ -30,24 +30,24 @@ class AccountController extends Controller
             'email' => ['required', 'email', Rule::unique($this->model->getTable())],
             'password' => 'required|min:6',
             'password_confirmation' => 'required|same:password',
-            '',
         ]);
 
         $input['verification_code'] = uniqid();
 
         $user = $this->model->create($input);
-        $message = new SMS($user->contact_number, "PetCare: Verification Code: {$input['verification_code']}");
-        $message->send();
+
+        // $message = new SMS($user->contact_number, "PetCare: Verification Code: {$input['verification_code']}");
+        // $message->send();
 
         Auth::login($user);
 
         // return redirect()->
 
-        // Toast::success("Welcome to PetCare, {$user->fullname}!");
+        Toast::success("Welcome to Camindate Petshop, {$user->fullname}!");
 
         return response()->json([
             'result' => true,
-            'next_url' => route('account.show.verification-page'),
+            'next_url' => route('home'),
         ]);
     }
 
