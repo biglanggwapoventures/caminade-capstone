@@ -143,7 +143,7 @@
 
                         {!! Form::bsText('username', 'Your username') !!}
                         {!! Form::bsPassword('password', 'Then your password') !!}
-                        <div class="text-center">
+                        <div class="text-center d-none">
 
                             <a href="{{ route('auth:facebook') }}" class="text-info"><i class="fab fa-facebook-square fa-2x"></i></a>
                             <a href="{{ route('auth:google') }}" class="text-danger"><i class="fab fa-google-plus-square fa-2x"></i></a>
