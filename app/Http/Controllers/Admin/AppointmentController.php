@@ -181,7 +181,7 @@ class AppointmentController extends CRUDController
             case 'cancelled':
                 return ['CANCELLED' => 'Cancelled'];
             default:
-                return ['PENDING' => '', 'DENIED' => 'Rejected', 'APPROVED' => 'Approved', 'COMPLETED' => 'Completed'];
+                return ['PENDING' => '', 'DENIED' => 'Declined', 'APPROVED' => 'Approved', 'COMPLETED' => 'Completed'];
         }
     }
 }

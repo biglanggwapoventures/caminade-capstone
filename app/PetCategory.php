@@ -24,7 +24,7 @@ class PetCategory extends Model
 
     public function scopeFieldsForMasterList($query)
     {
-        return $query;
+        return $query->orderBy('description');
     }
 
     public static function dropdownFormat()

@@ -25,7 +25,7 @@ class ServiceController extends CRUDController
                 'name' => ['required', Rule::unique($model->getTable())],
                 'description' => ['present'],
                 'duration' => ['required', 'integer'],
-                'service_status' => ['required', Rule::in(['active', 'inactive'])],
+                'service_status' => ['sometimes', 'nullable', Rule::in(['active', 'inactive'])],
                 'price' => ['required', 'numeric'],
             ],
             'update' => [

@@ -63,16 +63,13 @@
 
                 </td>
                 <td>
-                    {{ $row->appointment_status }}
+                    {{ $row->appointment_status == 'DENIED' ? 'DECLINED' :  $row->appointment_status }}
                     @if($row->is('denied'))
                         <p class="text-danger mb-0">{{ $row->status_remarks }}</p>
                     @endif
                 </td>
                 <td>
                     @include('components.form.index-actions', ['id' => $row->id, 'hideRemove' => true])
-                    @if(!in_array(strtolower($row->appointment_status), ['completed', 'denied', 'pending']))
-                        <button type="button" class="btn btn-success" data-target="#send-sms" data-toggle="modal" data-pk="{{ $row->id }}">SMS</button>
-                    @endif
                 </td>
             </tr>
         @empty

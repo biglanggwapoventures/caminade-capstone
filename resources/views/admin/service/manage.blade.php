@@ -33,6 +33,8 @@
                 </div>
             </div>
              {!! Form::bsTextarea('description', 'Description', null, ['rows' =>  3]) !!}
+
+            @if($resourceData->id)
             <div class="row">
                 <div class="col-3">
                     <div class="bg-info rounded p-3">
@@ -40,6 +42,7 @@
                     </div>
                 </div>
             </div>
+            @endif
 
 
             <hr>
