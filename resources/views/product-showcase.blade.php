@@ -42,8 +42,10 @@
                                     <a class="card-link text-success"><i class="fas fa-check"></i> In-stock</a>
                                     @else
                                     <a class="card-link text-danger"><i class="fas fa-times"></i> Low stock</a>
-
                                     @endif
+                                    <br>
+                                    <a href="#" class="show-cart-modal"  data-product-id='{{ $item->id }}'
+                                        modal = $('#cart-modal')><i class="fas fa-cart-plus"></i> Add to cart</a>
                                 </div>
                             </div>
                         </div>
@@ -55,3 +57,69 @@
 
 </div>
 @endsection
+
+@push('modals')
+<div class="modal fade" id="cart-modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    {!! Form::open(['url' => route('add-to-cart'),  'method' => 'POST', 'id' => 'cart-form']) !!}
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {!! Form::bsText('product_quantity', 'Quantity') !!}
+                {!! Form::hidden('product_id', null) !!}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary add-to-cart-button">Save changes</button>
+            </div>
+        </div>
+    {!! Form::close() !!}
+  </div>
+</div>
+@endpush
+
+@push('scripts')
+<script>
+    jQuery(document).ready(function($) {
+        $('.show-cart-modal').click(function(){
+            
+            var $this = $(this)
+                product_id = $this.data('product-id')
+                cart_modal = $('#cart-modal')
+
+            cart_modal.modal('show')
+            cart_modal.find('form [name="product_id"]').val(product_id)
+        }); 
+
+        $('.add-to-cart-button').click(function(){
+            if($('[name="product_quantity"]').val() == 0){
+                 $('#cart-modal').modal('hide');
+                 return;
+            }
+
+            $('#cart-form').submit();
+        })
+
+        $('#cart-form').on('submit', function(e){
+            e.preventDefault()
+
+            var product_id = $('[name="product_id"]').val()
+                product_quantity = $('[name="product_quantity"]').val()
+                url = $(this).attr('action')
+
+            $.post(url, {
+                product_quantity, 
+                product_id,
+                _token: '{{ csrf_token() }}'
+            }).done(function (res) {
+                $('#cart-modal').modal('hide')
+            })
+        })
+    });
+</script>
+@endpush

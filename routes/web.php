@@ -80,3 +80,9 @@ Route::group(['prefix' => 'api', 'as' => 'api:', 'middleware' => 'auth'], functi
     Route::get('customer/{customerId}/pets', 'APIController@getPetsFromCustomer')->name('get-customer-pets');
     Route::get('doctor/appointments', 'APIController@getDoctorAppointments')->name('get-doctor-appointments');
 });
+
+Route::post('add-to-cart', 'CartController@store')->name('add-to-cart');
+
+Route::get('/session', function () {
+    dd(Session::all());
+});
