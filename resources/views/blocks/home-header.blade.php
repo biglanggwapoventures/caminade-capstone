@@ -16,7 +16,7 @@
                     <a href="{{ route('doctor-showcase') }}" class="nav-link">Our Doctors</a>
                 </li>
                  <li>
-                    <a href="{{ route('doctor-showcase') }}" class="nav-link">My Cart</a>
+                    <a href="{{ route('my-cart') }}" class="nav-link">My Cart</a>
                 </li>
             </ul>
             @guest
