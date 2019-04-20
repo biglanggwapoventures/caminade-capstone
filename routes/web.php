@@ -80,3 +80,8 @@ Route::group(['prefix' => 'api', 'as' => 'api:', 'middleware' => 'auth'], functi
     Route::get('customer/{customerId}/pets', 'APIController@getPetsFromCustomer')->name('get-customer-pets');
     Route::get('doctor/appointments', 'APIController@getDoctorAppointments')->name('get-doctor-appointments');
 });
+
+Route::get('my-cart', 'CartController@index')->name('my-cart');
+Route::post('add-to-cart', 'CartController@store')->name('add-to-cart');
+Route::post('update-cart', 'CartController@edit')->name('edit-cart');
+Route::post('checkout-cart', 'CartController@checkout')->name('checkout-cart');
