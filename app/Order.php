@@ -38,11 +38,20 @@ class Order extends Model
         return $this->hasMany(OrderLine::class, 'order_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function paypalTransaction()
+    {
+        return $this->hasOne(PaypalTransaction::class, 'order_id');
+    }
+
     public function getTotalAmountAttribute()
     {
         if ($this->relationLoaded('line')) {
             return $this->line->sum('amount');
         }
+
         return 0;
     }
 
@@ -56,7 +65,7 @@ class Order extends Model
         return $query->whereHas('customer', function ($q) use ($name) {
             $q->whereRaw("CONCAT(firstname, ' ', lastname) LIKE '%{$name}%'");
         })
-            ->orWhere('customer_name', 'LIKE', "'%{$name}%'");
+                     ->orWhere('customer_name', 'LIKE', "'%{$name}%'");
     }
 
     public function scopeWithDetails($query)

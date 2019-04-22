@@ -12,6 +12,9 @@
     </div>
     <div class="row">
         <div class="col">
+            @if($message = session('message'))
+                <div class="alert alert-success"><i class="fas fa-check"></i> {{ $message }}</div>
+                @endif
             <table class="table">
                 <thead>
                     <tr>

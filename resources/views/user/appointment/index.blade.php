@@ -14,11 +14,12 @@
             <table class="table ">
                 <thead>
                     <tr>
-                        <th class="bg-secondary text-white">Ref #</th>
+                        <th class="bg-secondary text-white">ID</th>
                         <th class="bg-secondary text-white">Date</th>
                         <th class="bg-secondary text-white">Doctor</th>
                         <th class="bg-secondary text-white">Total Payable</th>
                         <th class="bg-secondary text-white">Status</th>
+                        <th class="bg-secondary text-white">remarks</th>
                         <th class="bg-secondary text-white"></th>
                         <th class="bg-secondary text-white"></th>
                     </tr>
@@ -30,8 +31,12 @@
                             <td>{{ date_create("{$row->appointment_date} {$row->appointment_time}")->format('m/d/Y \@ h:i A') }}</td>
                             <td>{{ $row->doctor->fullname }}</td>
                             <td>{{ number_format($row->getTotalAmount(), 2) }} php</td>
+
                             <td>
                                 {{ $row->appointment_status }}
+                            </td>
+                            <td>
+                                {{ $row->remarks }}
                             </td>
                             <td>
                                 @if($row->is('pending'))
@@ -44,7 +49,7 @@
                                         <button type="submit" class="btn btn-warning" onclick="javascript:return confirm('Are you sure? This cannot be undone!')">Cancel</button>
                                     {!! Form::close() !!}
                                 @else
-                                    <a href="{{ MyHelper::resource('show', ['id' => $row->id]) }}" class="btn btn-info">View</a>
+                                    <a href="{{ MyHelper::resource('show', ['id' => $row->id]) }}" class="btn btn-warning">View</a>
                                 @endif
                             </td>
                         </tr>

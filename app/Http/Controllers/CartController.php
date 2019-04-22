@@ -120,40 +120,4 @@ class CartController extends Controller
         ]);
     }
 
-    public function checkout(Request $request)
-    {
-        $input = $request->validate([
-            'remarks' => 'nullable'
-        ]);
-
-        $productItems = $request->session()->get('_CART_', collect());
-                
-        $order = null;
-
-        DB::transaction(function () use ($input, $productItems, $order) {
-            $order = Order::create([
-                'customer_id' => Auth::id(),
-                'customer_name' => Auth::user()->fullname,
-                'order_date' => now(),
-                'remarks' => $input['remarks'],
-            ]);
-
-            $orderDetails = collect($productItems)->map(function ($item) {
-                return [
-                    'product_id' => $item['product_id'],
-                    'quantity' => $item['product_quantity'],
-                    'unit_price' => $item['product_price'],
-                    'discount' => 0
-                ];
-            });
-
-            $order->line()->createMany($orderDetails->toArray());
-        });
-        
-        $request->session()->put('_CART_', collect([]));
-
-        return response()->json([
-            'result' => true
-        ]);
-    }
 }
