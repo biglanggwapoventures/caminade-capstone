@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 Route::get('/', 'HomeController')->name('home');
 
 Route::group(['prefix' => 'account', 'as' => 'account.'], function () {
@@ -59,12 +61,13 @@ Route::group(['prefix' => 'auth', 'as' => 'auth:'], function () {
     Route::get('google/callback', 'GoogleAuthController@handleProviderCallback');
 });
 
-Route::group(['prefix' => 'user', 'namespace' => 'User', 'as' => 'user.', 'middleware' => ['auth', 'role:customer']], function () {
-    Route::resource('pet', 'PetController');
-    Route::resource('appointment', 'AppointmentController');
-    Route::post('appointment/{appointmentId}/cancel', 'CancelAppointmentController')->name('appointment.cancel');
-    Route::get('order-history', 'ViewOrderHistoryController')->name('order-history.show');
-});
+Route::group(['prefix' => 'user', 'namespace' => 'User', 'as' => 'user.', 'middleware' => ['auth', 'role:customer']],
+    function () {
+        Route::resource('pet', 'PetController');
+        Route::resource('appointment', 'AppointmentController');
+        Route::post('appointment/{appointmentId}/cancel', 'CancelAppointmentController')->name('appointment.cancel');
+        Route::get('order-history', 'ViewOrderHistoryController')->name('order-history.show');
+    });
 
 Route::group(['prefix' => 'doctor', 'namespace' => 'Doctor', 'as' => 'doctor.', 'middleware' => 'auth'], function () {
     Route::resource('appointment', 'AppointmentController');
@@ -84,4 +87,7 @@ Route::group(['prefix' => 'api', 'as' => 'api:', 'middleware' => 'auth'], functi
 Route::get('my-cart', 'CartController@index')->name('my-cart');
 Route::post('add-to-cart', 'CartController@store')->name('add-to-cart');
 Route::post('update-cart', 'CartController@edit')->name('edit-cart');
-Route::post('checkout-cart', 'CartController@checkout')->name('checkout-cart');
+Route::post('cart', 'CartController@checkout')->name('checkout-cart');
+
+Route::get('checkout', 'CheckoutController@show')->name('show.checkout');
+Route::post('checkout', 'CheckoutController@store')->name('do.checkout');
