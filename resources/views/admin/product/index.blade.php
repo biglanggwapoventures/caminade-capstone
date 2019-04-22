@@ -80,7 +80,7 @@
             </td>
             <td>
                  @includeWhen(Auth::user()->is('admin'), 'components.form.index-actions', ['id' => $row->id, 'hideRemove' => true])
-                <a href="{{ route('admin.product.logs', ['product' => $row->id]) }}" class="btn btn-info">Logs</a>
+                <a href="{{ route('admin.product.logs', ['product' => $row->id]) }}" class="btn btn-info btn-sm">Logs</a>
             </td>
         </tr>
         @empty

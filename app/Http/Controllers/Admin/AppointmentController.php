@@ -121,19 +121,23 @@ class AppointmentController extends CRUDController
 
     public function afterStore($model)
     {
-        $this->createRelations($model, 'products', 'usedProducts');
-        $this->createRelations($model, 'findings', 'findings');
-        // $this->createRelations($model, 'pet_logs', 'petLogs');
-        $model->usedProducts->each->saveProductLog();
+        if($model->appointment_status == 'COMPLETED'){
+            $this->createRelations($model, 'products', 'usedProducts');
+            $this->createRelations($model, 'findings', 'findings');
+            // $this->createRelations($model, 'pet_logs', 'petLogs');
+            $model->usedProducts->each->saveProductLog();
+        }
         Toast::success('New appointment has been added!');
     }
 
     public function afterUpdate($model)
     {
-        $this->updateParentRelations($model, 'products', 'usedProducts');
-        $this->updateParentRelations($model, 'findings', 'findings');
-        // $this->updateParentRelations($model, 'pet_logs', 'petLogs');
-        $model->usedProducts->each->saveProductLog();
+        if($model->appointment_status == 'COMPLETED'){
+            $this->updateParentRelations($model, 'products', 'usedProducts');
+            $this->updateParentRelations($model, 'findings', 'findings');
+            // $this->updateParentRelations($model, 'pet_logs', 'petLogs');
+            $model->usedProducts->each->saveProductLog();
+        }
         Toast::success('Appointment has been successfully updated!');
     }
 

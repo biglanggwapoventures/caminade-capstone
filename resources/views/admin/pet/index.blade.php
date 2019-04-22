@@ -46,7 +46,7 @@
             <td>{{ date_create($row->birthdate)->format('m/d/Y') }}</td>
             <td>
                 @includeWhen(auth()->user()->is('admin'), 'components.form.index-actions', ['id' => $row->id])
-                <a href="{{ route('admin.pet.show', ['id' => $row->id]) }}" class="btn btn-info">View</a>
+                <a href="{{ route('admin.pet.show', ['id' => $row->id]) }}" class="btn btn-info btn-sm">View</a>
             </td>
         </tr>
         @empty

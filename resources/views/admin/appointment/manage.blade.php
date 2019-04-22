@@ -50,8 +50,9 @@
                     {!! Form::bsSelect('parent[doctor_id]', 'Assigned Veterinarian', $doctorList, $resourceData->doctor_id, ['class' => 'custom-select w-100']) !!}
                 </div>
             </div>
-            {!! Form::bsTextarea('parent[remarks]', 'Remarks', $resourceData->remarks, ['rows' => 3]) !!}
+            {!! Form::bsTextarea('parent[remarks]', 'Remarks', $resourceData->remarks, ['rows' => 3, 'readonly' => Auth::user()->role != 'user' ? true : false]) !!}
 
+            @if($resourceData->appointment_status === 'APPROVED')
             <h4 class="mt-5">Services Rendered</h4>
 
             <div class="card">
@@ -87,8 +88,8 @@
                                 </td>
                                 <td>
                                     {!! Form::bsSelect("child[{$loop->index}][service_id]", null, $serviceList,  $row->service_id, ['class' => 'custom-select w-100 service', 'data-name' => 'child[idx][service_id]']) !!}
-                                    {!! Form::hidden("child[{$loop->index}][service_price]", $row->service_price, ['class' => 'hidden-service-price', 'data-name' => 'child[idx][service_price]']) !!}
-                                    {!! Form::hidden("child[{$loop->index}][service_duration]", $row->service_duration, ['class' => 'hidden-service-duration', 'data-name' => 'child[idx][service_duration]']) !!}
+                                    {!! Form::hidden("child[{$loop->index}][service_price]", $row->service_price ?? $row->service->price, ['class' => 'hidden-service-price', 'data-name' => 'child[idx][service_price]']) !!}
+                                    {!! Form::hidden("child[{$loop->index}][service_duration]", $row->service_duration ?? $row->service->duration, ['class' => 'hidden-service-duration', 'data-name' => 'child[idx][service_duration]']) !!}
                                 </td>
                                 <td class="service-duration clear"></td>
                                 <td class="service-price clear"></td>
@@ -282,6 +283,7 @@
                 </table>
             </div>
             <hr>
+            @endif
             <div class="row">
                 <div class="col-4">
                     {!! Form::bsSelect('parent[appointment_status]', 'Set appointment status', $statusOptions, $resourceData->appointment_status,['class' => 'custom-select w-100']) !!}
@@ -337,10 +339,12 @@
             if(!val) return;
             var info = services[val],
                 tr = $this.closest('tr');
+                console.log(tr.find('.hidden-service-duration').val(), 'lol')
             tr.find('.service-duration').text(tr.find('.hidden-service-duration').val()+' minutes');
             tr.find('.service-price').text(tr.find('.hidden-service-price').val()+' php');
             $('#service-table').trigger('table:changed');
         });
+
         $('.service').trigger('change');
 
         $('#service-table').on('change', '.service', function () {
