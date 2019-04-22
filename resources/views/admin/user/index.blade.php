@@ -51,21 +51,21 @@
             <td>{{ $row->role }}</td>
             <td>
                 @if($row->is_blocked)
-                <span class="badge badge-pill badge-warning">BLOCKED</span> <br>
+                <span class="badge badge-pill badge-warning btn-sm">BLOCKED</span> <br>
                 <small>By: {{ $row->blocked->fullname }} <br> On: {{ date_create($row->blocked_at)->format('m/d/Y h:i A') }}</small>
                 @else
-                    <span class="badge badge-pill badge-success">ACTIVE</span>
+                    <span class="badge badge-pill badge-success btn-sm">ACTIVE</span>
                 @endif
             </td>
             <td>
                 @include('components.form.index-actions', ['id' => $row->id, 'hideRemove' => true])
                 @if($row->is_blocked)
                     {!! Form::open(['url' =>  route('admin.user.unblock', ['userId' => $row->id]) , 'method' => 'post', 'style' => 'display:inline-block']) !!}
-                    <button type="submit" class="btn btn-success" onclick="javascript:return confirm('Are you sure?')">Unblock</button>
+                    <button type="submit" class="btn btn-success btn-sm" onclick="javascript:return confirm('Are you sure?')">Unblock</button>
 
                 @else
                     {!! Form::open(['url' =>  route('admin.user.block', ['userId' => $row->id]) , 'method' => 'post', 'style' => 'display:inline-block']) !!}
-                    <button type="submit" class="btn btn-warning" onclick="javascript:return confirm('Are you sure?')">Block</button>
+                    <button type="submit" class="btn btn-warning btn-sm" onclick="javascript:return confirm('Are you sure?')">Block</button>
                 @endif
                 {!! Form::close() !!}
                 @if($row->is_blocked)
