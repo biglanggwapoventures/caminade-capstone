@@ -34,7 +34,7 @@
 
             <div class="row">
                 <div class="col-3">
-                    {!! Form::bsSelect('parent[customer_id]', 'Customer', $customerList, $resourceData->customer_id, ['class' => 'custom-select w-100', 'data-get-pets-url' => route('api:get-customer-pets', ['customerId' => '__ID__']), 'id' => 'customer']) !!}
+                {!! Form::bsSelect('parent[customer_id]', 'Customer', $customerList, $resourceData->customer_id, ['class' => 'custom-select w-100', 'data-get-pets-url' => route('api:get-customer-pets', ['customerId' => '__ID__']), 'id' => 'customer', 'disabled' => $resourceData->id ? true : false]) !!}
                 </div>
                 <div class="col-5">
                     <div class="row">
