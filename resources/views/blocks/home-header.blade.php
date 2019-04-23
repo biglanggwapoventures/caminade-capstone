@@ -15,9 +15,11 @@
                 <li>
                     <a href="{{ route('doctor-showcase') }}" class="nav-link">Our Doctors</a>
                 </li>
-                 <li>
-                    <a href="{{ route('my-cart') }}" class="nav-link">My Cart</a>
-                </li>
+                @if(Auth::check())
+                    <li>
+                        <a href="{{ route('my-cart') }}" class="nav-link">My Cart</a>
+                    </li>
+                @endif
             </ul>
             @guest
             <ul class="navbar-nav ml-auto">
