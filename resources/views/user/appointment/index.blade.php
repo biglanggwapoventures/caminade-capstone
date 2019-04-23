@@ -46,10 +46,10 @@
                             <td>
                                 @if($row->is('pending'))
                                     {!! Form::open(['url' => route('user.appointment.cancel', ['appointmentId' => $row->id])]) !!}
-                                        <button type="submit" class="btn btn-warning" onclick="javascript:return confirm('Are you sure? This cannot be undone!')">Cancel</button>
+                                        <button type="submit" class="btn btn-warning btn-sm" onclick="javascript:return confirm('Are you sure? This cannot be undone!')">Cancel</button>
                                     {!! Form::close() !!}
                                 @else
-                                    <a href="{{ MyHelper::resource('show', ['id' => $row->id]) }}" class="btn btn-warning">View</a>
+                                    <a href="{{ MyHelper::resource('show', ['id' => $row->id]) }}" class="btn btn-warning btn-sm">View</a>
                                 @endif
                             </td>
                         </tr>
