@@ -121,7 +121,7 @@ class AppointmentController extends CRUDController
 
     public function afterStore($model)
     {
-        if($model->appointment_status == 'COMPLETED'){
+        if(request()->appointment_status == 'COMPLETED' || request()->appointment_status  == 'APPROVED'){
             $this->createRelations($model, 'products', 'usedProducts');
             $this->createRelations($model, 'findings', 'findings');
             // $this->createRelations($model, 'pet_logs', 'petLogs');
@@ -132,7 +132,7 @@ class AppointmentController extends CRUDController
 
     public function afterUpdate($model)
     {
-        if($model->appointment_status == 'COMPLETED'){
+        if (request()->appointment_status == 'COMPLETED' || request()->appointment_status  == 'APPROVED') {
             $this->updateParentRelations($model, 'products', 'usedProducts');
             $this->updateParentRelations($model, 'findings', 'findings');
             // $this->updateParentRelations($model, 'pet_logs', 'petLogs');

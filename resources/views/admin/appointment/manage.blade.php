@@ -35,24 +35,36 @@
             <div class="row">
                 <div class="col-3">
                 {!! Form::bsSelect('parent[customer_id]', 'Customer', $customerList, $resourceData->customer_id, ['class' => 'custom-select w-100', 'data-get-pets-url' => route('api:get-customer-pets', ['customerId' => '__ID__']), 'id' => 'customer', 'disabled' => $resourceData->id ? true : false]) !!}
+                @if($resourceData->id)
+                    {!! Form::hidden('parent[customer_id]', $resourceData->customer_id) !!}
+                @endif
                 </div>
                 <div class="col-5">
                     <div class="row">
                         <div class="col">
-                             {!! Form::bsDate('parent[appointment_date]', 'Date', $resourceData->appointment_date, ['min' => is_null($resourceData->id) ? date('Y-m-d') : 'false']) !!}
+                            {!! Form::bsDate('parent[appointment_date]', 'Date', $resourceData->appointment_date, ['min' => is_null($resourceData->id) ? date('Y-m-d') : 'false', 'disabled' => $resourceData->appointment_status == 'APPROVED' || $resourceData->appointment_status == 'COMPLETED' ? true : false ]) !!}
+                            @if($resourceData->appointment_status == 'APPROVED' || $resourceData->appointment_status == 'COMPLETED')
+                                {!! Form::hidden('parent[appointment_date]', $resourceData->appointment_date) !!}
+                            @endif
                         </div>
                         <div class="col">
-                            {!! Form::bsSelect('parent[appointment_time]', 'Time', MyHelper::timeInterval(date_create_from_format('H:i', '09:00'), date_create_from_format('H:i', '17:00')), $resourceData->appointment_time) !!}
+                            {!! Form::bsSelect('parent[appointment_time]', 'Time', MyHelper::timeInterval(date_create_from_format('H:i', '09:00'), date_create_from_format('H:i', '17:00')), $resourceData->appointment_time, ['disabled' => $resourceData->appointment_status == 'APPROVED' || $resourceData->appointment_status == 'COMPLETED' ? true : false ]) !!}
+                            @if($resourceData->appointment_status == 'APPROVED' || $resourceData->appointment_status == 'COMPLETED')
+                                {!! Form::hidden('parent[appointment_time]', $resourceData->appointment_time) !!}
+                            @endif
                         </div>
                     </div>
                 </div>
                 <div class="col-4">
-                    {!! Form::bsSelect('parent[doctor_id]', 'Assigned Veterinarian', $doctorList, $resourceData->doctor_id, ['class' => 'custom-select w-100']) !!}
+                    {!! Form::bsSelect('parent[doctor_id]', 'Assigned Veterinarian', $doctorList, $resourceData->doctor_id, ['class' => 'custom-select w-100', 'disabled' => $resourceData->appointment_status == 'APPROVED' || $resourceData->appointment_status == 'COMPLETED' ? true : false ]) !!}
+                    @if($resourceData->appointment_status == 'APPROVED' || $resourceData->appointment_status == 'COMPLETED')
+                        {!! Form::hidden('parent[doctor_id]', $resourceData->doctor_id) !!}
+                    @endif
                 </div>
             </div>
             {!! Form::bsTextarea('parent[remarks]', 'Remarks', $resourceData->remarks, ['rows' => 3, 'readonly' => Auth::user()->role != 'user' ? true : false]) !!}
 
-            @if($resourceData->appointment_status === 'APPROVED')
+            
             <h4 class="mt-5">Services Rendered</h4>
 
             <div class="card">
@@ -108,6 +120,7 @@
                     </tfoot>
             </table>
             </div>
+            @if($resourceData->appointment_status === 'APPROVED' || $resourceData->appointment_status === 'COMPLETED')
             @if($resourceData->id)
                 <h4 class="mt-5">Boarding</h4>
                 @if($resourceData->boarding)
