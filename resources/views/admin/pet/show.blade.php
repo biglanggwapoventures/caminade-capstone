@@ -51,10 +51,10 @@
                     <td class="bg-info text-white">Color:</td>
                     <td class="text-center">{{ $resourceData->color }}</td>
                 </tr>
-                <tr>
+                <!-- <tr>
                     <td class="bg-info text-white">Weight (kg):</td>
                     <td class="text-center">{{ $resourceData->weight ? number_format($resourceData->weight) : '' }}</td>
-                </tr>
+                </tr> -->
                 <tr>
                     <td class="bg-info text-white">Characteristics:</td>
                     <td class="text-center">{{ $resourceData->physical_characteristics }}</td>

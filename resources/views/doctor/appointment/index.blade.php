@@ -11,7 +11,7 @@
     </div>
 </div>
 <div class="row h-100 mt-2">
-    <div class="col-7" id="calendar"></div>
+    <div class="col-12" id="calendar"></div>
 </div>
 @endsection
 

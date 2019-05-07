@@ -16,6 +16,7 @@ use App\Service;
 use App\User;
 use Illuminate\Validation\Rule;
 use Toast;
+use Carbon\Carbon;
 
 class AppointmentController extends CRUDController
 {
@@ -38,12 +39,15 @@ class AppointmentController extends CRUDController
         PetLog $petLog
     ) {
         parent::__construct();
+        // dd(request()->toArray());
         $this->resourceModel = $model;
         $this->relatedModel = 'line';
         $this->validationRules = [
             'store' => [
-                'parent.appointment_date' => 'required|date_format:Y-m-d|after_or_equal:today',
-                'parent.appointment_time' => 'required|date_format:H:i:s',
+                'parent.appointment_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:today'],
+                'parent.appointment_time' => ['required', 'date_format:H:i:s', Rule::unique('appointments', 'appointment_time')->where(function($query){
+                    $query->where('appointment_date', '=', request()['parent']['appointment_date']);
+                })],
                 'parent.customer_id' => ['required', new CustomerRole],
                 'parent.doctor_id' => ['nullable', 'required_if:parent.appointment_status,APPROVED', new DoctorRole],
                 'parent.remarks' => 'present',
@@ -64,8 +68,10 @@ class AppointmentController extends CRUDController
                 // 'pet_logs.*.remarks' => ['nullable', 'required_with:pet_logs.*.pet_id,pet_logs.*.log_date,pet_logs.*.log_time'],
             ],
             'update' => [
-                'parent.appointment_date' => 'required|date_format:Y-m-d',
-                'parent.appointment_time' => 'required|date_format:H:i:s',
+                'parent.appointment_date' => ['required', 'date_format:Y-m-d'],
+                'parent.appointment_time' => ['required', 'date_format:H:i:s', Rule::unique('appointments', 'appointment_time')->where(function($query){
+                    $query->where('appointment_date', '=', request()['parent']['appointment_date']);
+                })->ignore(request()->route('appointment'))],
                 'parent.customer_id' => ['required', new CustomerRole],
                 'parent.doctor_id' => ['nullable', 'required_if:parent.appointment_status,APPROVED', new DoctorRole],
                 'parent.remarks' => 'present',

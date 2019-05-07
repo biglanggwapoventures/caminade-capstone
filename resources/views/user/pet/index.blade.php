@@ -218,12 +218,12 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-3">
+            <div class="col-6">
                 {!! Form::bsText('color', 'Color') !!}
             </div>
-            <div class="col-3">
+            <!-- <div class="col-3">
                 {!! Form::bsText('weight', 'Weight (kg)') !!}
-            </div>
+            </div> -->
             <div class="col-6">
                 {!! Form::bsText('physical_characteristics', 'Physical Characteristics') !!}
             </div>

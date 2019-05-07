@@ -19,8 +19,10 @@ class AppointmentController extends CRUDController
         $this->relatedModel = 'line';
         $this->validationRules = [
             'store' => [
-                'parent.appointment_date' => 'required|date_format:Y-m-d|after_or_equal:today',
-                'parent.appointment_time' => 'required|date_format:H:i:s',
+                'parent.appointment_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:today'],
+                'parent.appointment_time' => ['required', 'date_format:H:i:s', Rule::unique('appointments', 'appointment_time')->where(function($query){
+                    $query->where('appointment_date', '=', request()['parent']['appointment_date']);
+                })],
                 'parent.remarks' => 'present',
                 'child.*.pet_id' => [
                     'required',
@@ -34,8 +36,10 @@ class AppointmentController extends CRUDController
                 ],
             ],
             'update' => [
-                'parent.appointment_date' => 'required|date_format:Y-m-d',
-                'parent.appointment_time' => 'required|date_format:H:i:s',
+                'parent.appointment_date' => ['required', 'date_format:Y-m-d'],
+                'parent.appointment_time' => ['required', 'date_format:H:i:s', Rule::unique('appointments', 'appointment_time')->where(function($query){
+                    $query->where('appointment_date', '=', request()['parent']['appointment_date']);
+                })->ignore(request()->route('appointment'))],
                 'parent.remarks' => 'present',
                 'child.*.pet_id' => 'sometimes',
                 'child.*.pet_id' => [
