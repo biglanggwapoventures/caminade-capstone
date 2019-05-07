@@ -22,7 +22,19 @@
     jQuery(document).ready(function($) {
 
         function showModal(data) {
+            var trHtml = '';
 
+            data.line.forEach(function(value, key){
+                trHtml += `
+                <tr class="service-line">
+                    <td>${value.pet.name}</td>
+                    <td>${value.service.name}</td>
+                    <td>${value.service.duration}</td>
+                    <td>${Number(value.service.price).toFixed(2)}</td>
+                </tr>
+                `
+            });
+            
             var modal = $('#appointment-details'),
                 manageUrl = "{{ route('doctor.appointment.edit', ['id' => '__ID__']) }}";
             modal.find('.service-line').remove()
@@ -33,7 +45,10 @@
             modal.find('.end').text(moment(data.approximate_finish_time, 'YYYY-MM-DD HH:mm').format('hh:mm a'));
             modal.find('.remarks').html(data['remarks'] || '<span class="text-danger"><em>Empty</em></span>');
             modal.find('.manage-link').attr('href', manageUrl.replace('__ID__', data.id));
+            modal.find('table tr:last').after(trHtml)
+          
             modal.modal('show');
+            
         }
 
         $('#calendar').fullCalendar({
@@ -100,7 +115,6 @@
                             <td class="text-right border-0">Date</td>
                             <td class="date text-info border-0">Customer</td>
                         </tr>
-
                         <tr>
                             <td class="text-right border-0">Start Time</td>
                             <td class="start text-info border-0">Customer</td>
@@ -111,7 +125,7 @@
                             <td class="text-right border-0 ">Remarks</td>
                             <td class="text-info border-0 remarks" colspan="3"></td>
                         </tr>
-                        <tr class="d-none">
+                        <tr>
                             <td class="bg-info text-white">Pet</td>
                             <td class="bg-info text-white">Service</td>
                             <td class="bg-info text-white">Duration</td>
